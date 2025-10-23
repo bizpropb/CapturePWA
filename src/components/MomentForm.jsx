@@ -171,7 +171,6 @@ export default function MomentForm({ onMomentCreated }) {
             <>
               <CameraCapture
                 onCapture={handleCameraCapture}
-                onError={(err) => setError(err)}
               />
               <div className="mt-2">
                 <input
@@ -221,7 +220,6 @@ export default function MomentForm({ onMomentCreated }) {
             <>
               <AudioRecorder
                 onCapture={handleAudioCapture}
-                onError={(err) => setError(err)}
               />
               <div className="mt-2">
                 <input
@@ -264,7 +262,6 @@ export default function MomentForm({ onMomentCreated }) {
           </label>
           <GPSCapture
             onCapture={handleGPSCapture}
-            onError={(err) => setError(err)}
           />
         </div>
 
