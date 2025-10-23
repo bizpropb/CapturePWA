@@ -14,6 +14,23 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Moment Capture - Save Your Moments",
   description: "Capture and cherish your special moments with photos, audio, and location",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Moments",
+  },
+  icons: {
+    icon: "/icons/icon-192x192.png",
+    apple: "/icons/icon-192x192.png",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#2563eb",
 };
 
 export default function RootLayout({ children }) {
