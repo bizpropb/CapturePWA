@@ -53,13 +53,13 @@ export default function EditModal({ moment, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 className="text-2xl font-bold mb-4">Edit Moment</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+      <div className="bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+        <h2 className="text-2xl font-bold mb-4 text-white">Edit Moment</h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="edit-description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="edit-description" className="block text-sm font-medium text-gray-300 mb-2">
               Description
             </label>
             <textarea
@@ -67,13 +67,13 @@ export default function EditModal({ moment, onClose, onSave }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={loading}
             />
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            <div className="mb-4 p-3 bg-red-900 border border-red-700 text-red-200 rounded">
               {error}
             </div>
           )}
@@ -82,7 +82,7 @@ export default function EditModal({ moment, onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition"
+              className="flex-1 bg-gray-600 text-gray-200 py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200"
               disabled={loading}
             >
               Cancel
@@ -90,7 +90,7 @@ export default function EditModal({ moment, onClose, onSave }) {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors duration-200"
             >
               {loading ? 'Saving...' : 'Save'}
             </button>

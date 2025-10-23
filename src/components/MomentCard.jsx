@@ -15,10 +15,10 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
   const hasLocation = moment.gpsLat !== 0 || moment.gpsLng !== 0;
 
   return (
-    <div className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden">
+    <div className="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden">
       {/* Image */}
       {moment.imageUrl && (
-        <div className="w-full h-48 bg-gray-200">
+        <div className="w-full h-48 bg-gray-700">
           <img
             src={moment.imageUrl}
             alt="Moment"
@@ -31,7 +31,7 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
       <div className="p-6">
         {/* Description */}
         <div className="mb-3">
-          <p className="text-gray-800 text-lg whitespace-pre-wrap">{moment.description}</p>
+          <p className="text-gray-100 text-lg whitespace-pre-wrap">{moment.description}</p>
         </div>
 
         {/* Audio Player */}
@@ -45,7 +45,7 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
         )}
 
         {/* Metadata */}
-        <div className="text-sm text-gray-600 space-y-1">
+        <div className="text-sm text-gray-400 space-y-1">
           <p>
             <span className="font-medium">Created:</span> {formatDate(moment.createdAt)}
           </p>
@@ -55,7 +55,7 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
               <span className="font-medium">Location:</span> {moment.gpsLat.toFixed(4)}, {moment.gpsLng.toFixed(4)}
             </p>
           ) : (
-            <p className="text-gray-400">No location</p>
+            <p className="text-gray-500">No location</p>
           )}
         </div>
 
@@ -63,13 +63,13 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
         <div className="mt-4 flex gap-2">
           <button
             onClick={() => onEdit(moment)}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+            className="flex-1 bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-800 transition-colors duration-200"
           >
             Edit
           </button>
           <button
             onClick={() => onDelete(moment.id)}
-            className="flex-1 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition"
+            className="flex-1 bg-red-900 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors duration-200"
           >
             Delete
           </button>

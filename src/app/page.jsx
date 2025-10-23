@@ -97,26 +97,26 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="min-h-screen bg-gray-900">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         <header className="mb-8">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Moment Capture</h1>
-              <p className="text-gray-600 mt-2">Capture and cherish your special moments</p>
+              <h1 className="text-4xl font-bold text-white">Moment Capture</h1>
+              <p className="text-gray-400 mt-2">Capture and cherish your special moments</p>
             </div>
             <div className="flex flex-col items-end gap-2">
               {/* Online/Offline Indicator */}
               <div className={`px-3 py-1 rounded-full text-sm font-medium ${
                 isOnline
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
+                  ? 'bg-green-900 text-green-200'
+                  : 'bg-red-900 text-red-200'
               }`}>
                 {isOnline ? '🟢 Online' : '🔴 Offline'}
               </div>
               {/* Syncing Indicator */}
               {syncing && (
-                <div className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                <div className="px-3 py-1 rounded-full text-sm font-medium bg-blue-900 text-blue-200">
                   🔄 Syncing...
                 </div>
               )}
@@ -124,20 +124,28 @@ export default function Home() {
           </div>
         </header>
 
-        <MomentForm onMomentCreated={handleMomentCreated} />
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-            Error: {error}
+        <div className="flex gap-6">
+          {/* Left Column - Form (60%) */}
+          <div className="w-[60%]">
+            <MomentForm onMomentCreated={handleMomentCreated} />
           </div>
-        )}
 
-        <MomentList
-          moments={moments}
-          loading={loading}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-        />
+          {/* Right Column - Moments List (40%) */}
+          <div className="w-[40%]">
+            {error && (
+              <div className="mb-4 p-4 bg-red-900 border border-red-700 text-red-200 rounded">
+                Error: {error}
+              </div>
+            )}
+
+            <MomentList
+              moments={moments}
+              loading={loading}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          </div>
+        </div>
 
         {editingMoment && (
           <EditModal

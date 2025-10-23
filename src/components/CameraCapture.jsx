@@ -82,9 +82,9 @@ export default function CameraCapture({ onCapture, onError }) {
 
   if (!isSupported) {
     return (
-      <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-        <p className="text-sm text-yellow-800">
-          📷 Camera not supported. Please use the file upload instead.
+      <div className="p-4 bg-yellow-900 border border-yellow-700 rounded-md">
+        <p className="text-sm text-white">
+          Camera not supported. Please use the file upload instead.
         </p>
       </div>
     );
@@ -96,12 +96,12 @@ export default function CameraCapture({ onCapture, onError }) {
         <button
           type="button"
           onClick={startCamera}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+          className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200"
         >
-          📷 Open Camera
+          Open Camera
         </button>
         {error && (
-          <p className="mt-2 text-sm text-red-600">{error}</p>
+          <p className="mt-2 text-sm text-red-400">{error}</p>
         )}
       </div>
     );
@@ -114,9 +114,9 @@ export default function CameraCapture({ onCapture, onError }) {
         <button
           type="button"
           onClick={retake}
-          className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition"
+          className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors duration-200"
         >
-          🔄 Retake Photo
+          Retake Photo
         </button>
       </div>
     );
@@ -139,16 +139,16 @@ export default function CameraCapture({ onCapture, onError }) {
         <button
           type="button"
           onClick={capturePhoto}
-          className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition font-medium"
+          className="flex-1 bg-green-800 text-white py-2 px-4 rounded-md hover:bg-green-900 transition-colors duration-200 font-medium"
         >
-          📸 Capture
+          Capture
         </button>
         <button
           type="button"
           onClick={stopCamera}
-          className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition"
+          className="flex-1 bg-red-950 text-white py-2 px-4 rounded-md hover:bg-red-900 transition-colors duration-200"
         >
-          ✖ Cancel
+          Cancel
         </button>
       </div>
     </div>

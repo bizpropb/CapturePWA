@@ -100,9 +100,9 @@ export default function AudioRecorder({ onCapture, onError }) {
 
   if (!isSupported) {
     return (
-      <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-        <p className="text-sm text-yellow-800">
-          🎤 Microphone not supported. Please use the file upload instead.
+      <div className="p-4 bg-yellow-900 border border-yellow-700 rounded-md">
+        <p className="text-sm text-white">
+          Microphone not supported. Please use the file upload instead.
         </p>
       </div>
     );
@@ -110,15 +110,15 @@ export default function AudioRecorder({ onCapture, onError }) {
 
   if (audioBlob) {
     return (
-      <div className="p-4 bg-gray-50 border border-gray-200 rounded-md">
+      <div className="p-4 bg-gray-700 border border-gray-600 rounded-md">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-gray-300">
             Recorded Audio ({formatDuration(duration)})
           </span>
           <button
             type="button"
             onClick={deleteRecording}
-            className="text-red-600 hover:text-red-700 text-sm font-medium"
+            className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors duration-200"
           >
             Delete
           </button>
@@ -130,11 +130,11 @@ export default function AudioRecorder({ onCapture, onError }) {
 
   if (isRecording) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+      <div className="p-4 bg-red-900 border border-red-700 rounded-md">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
-            <span className="animate-pulse h-3 w-3 bg-red-600 rounded-full mr-2"></span>
-            <span className="text-sm font-medium text-red-900">
+            <span className="animate-pulse h-3 w-3 bg-red-400 rounded-full mr-2"></span>
+            <span className="text-sm font-medium text-red-100">
               Recording... {formatDuration(duration)}
             </span>
           </div>
@@ -142,9 +142,9 @@ export default function AudioRecorder({ onCapture, onError }) {
         <button
           type="button"
           onClick={stopRecording}
-          className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition"
+          className="w-full bg-red-950 text-white py-2 px-4 rounded-md hover:bg-red-900 transition-colors duration-200"
         >
-          ⏹ Stop Recording
+          Stop Recording
         </button>
       </div>
     );
@@ -155,12 +155,12 @@ export default function AudioRecorder({ onCapture, onError }) {
       <button
         type="button"
         onClick={startRecording}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+        className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200"
       >
-        🎤 Start Recording
+        Start Recording
       </button>
       {error && (
-        <p className="mt-2 text-sm text-red-600">{error}</p>
+        <p className="mt-2 text-sm text-red-400">{error}</p>
       )}
     </div>
   );

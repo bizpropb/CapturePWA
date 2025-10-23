@@ -49,9 +49,9 @@ export default function GPSCapture({ onCapture, onError }) {
 
   if (!isSupported) {
     return (
-      <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-        <p className="text-sm text-yellow-800">
-          📍 GPS not supported. Location will default to 0, 0.
+      <div className="p-4 bg-yellow-900 border border-yellow-700 rounded-md">
+        <p className="text-sm text-white">
+          GPS not supported. Location will default to 0, 0.
         </p>
       </div>
     );
@@ -60,15 +60,15 @@ export default function GPSCapture({ onCapture, onError }) {
   return (
     <div>
       {location ? (
-        <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+        <div className="p-4 bg-green-900 border border-green-700 rounded-md">
           <div className="flex justify-between items-start mb-2">
             <div>
-              <p className="text-sm font-medium text-green-900">Location Captured</p>
-              <p className="text-xs text-green-700 font-mono mt-1">
+              <p className="text-sm font-medium text-green-100">Location Captured</p>
+              <p className="text-xs text-green-200 font-mono mt-1">
                 {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
               </p>
               {location.accuracy && (
-                <p className="text-xs text-green-600 mt-1">
+                <p className="text-xs text-green-300 mt-1">
                   Accuracy: ±{Math.round(location.accuracy)}m
                 </p>
               )}
@@ -76,7 +76,7 @@ export default function GPSCapture({ onCapture, onError }) {
             <button
               type="button"
               onClick={clearLocation}
-              className="text-green-700 hover:text-green-900 text-sm font-medium"
+              className="text-green-200 hover:text-green-100 text-sm font-medium"
             >
               Clear
             </button>
@@ -88,9 +88,9 @@ export default function GPSCapture({ onCapture, onError }) {
             type="button"
             onClick={getLocation}
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+            className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
           >
-            {loading ? '📍 Getting Location...' : '📍 Get Current Location'}
+            {loading ? 'Getting Location...' : 'Get Current Location'}
           </button>
           {error && (
             <p className="mt-2 text-sm text-red-600">{error}</p>

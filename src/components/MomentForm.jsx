@@ -13,7 +13,6 @@ export default function MomentForm({ onMomentCreated }) {
   const [audioData, setAudioData] = useState(null); // Blob from recorder or file
   const [gpsLat, setGpsLat] = useState(0);
   const [gpsLng, setGpsLng] = useState(0);
-  const [useFileUpload, setUseFileUpload] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
   const [error, setError] = useState('');
@@ -142,13 +141,13 @@ export default function MomentForm({ onMomentCreated }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-4">Create a Moment</h2>
+    <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+      <h2 className="text-2xl font-bold mb-4 text-white">Create a Moment</h2>
 
       <form onSubmit={handleSubmit}>
         {/* Description */}
         <div className="mb-6">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
             Description *
           </label>
           <textarea
@@ -157,51 +156,40 @@ export default function MomentForm({ onMomentCreated }) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="What's on your mind?"
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
           />
         </div>
 
         {/* Camera / Image Upload */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Photo (optional)
           </label>
 
-          {!imageData && !useFileUpload && (
-            <CameraCapture
-              onCapture={handleCameraCapture}
-              onError={(err) => setError(err)}
-            />
-          )}
-
-          {!imageData && !useFileUpload && (
-            <button
-              type="button"
-              onClick={() => setUseFileUpload(true)}
-              className="mt-2 text-sm text-blue-600 hover:text-blue-700"
-            >
-              Or upload from files
-            </button>
-          )}
-
-          {(useFileUpload && !imageData) && (
-            <div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageFileChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                disabled={loading}
+          {!imageData && (
+            <>
+              <CameraCapture
+                onCapture={handleCameraCapture}
+                onError={(err) => setError(err)}
               />
-              <button
-                type="button"
-                onClick={() => setUseFileUpload(false)}
-                className="mt-2 text-sm text-blue-600 hover:text-blue-700"
-              >
-                Or use camera
-              </button>
-            </div>
+              <div className="mt-2">
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageFileChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="text-sm text-blue-300 hover:text-blue-200 transition-colors duration-200 cursor-pointer"
+                >
+                  Or upload from files
+                </label>
+              </div>
+            </>
           )}
 
           {imageData && (
@@ -214,7 +202,7 @@ export default function MomentForm({ onMomentCreated }) {
               <button
                 type="button"
                 onClick={clearImage}
-                className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                className="absolute top-2 right-2 bg-red-800 text-white px-3 py-1 rounded hover:bg-red-900 transition-colors duration-200"
                 disabled={loading}
               >
                 Remove
@@ -225,48 +213,53 @@ export default function MomentForm({ onMomentCreated }) {
 
         {/* Audio Recorder / Upload */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Audio (optional)
           </label>
 
           {!audioData && (
-            <AudioRecorder
-              onCapture={handleAudioCapture}
-              onError={(err) => setError(err)}
-            />
+            <>
+              <AudioRecorder
+                onCapture={handleAudioCapture}
+                onError={(err) => setError(err)}
+              />
+              <div className="mt-2">
+                <input
+                  id="audio-upload"
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioFileChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+                <label
+                  htmlFor="audio-upload"
+                  className="text-sm text-blue-300 hover:text-blue-200 transition-colors duration-200 cursor-pointer"
+                >
+                  Or upload audio file
+                </label>
+              </div>
+            </>
           )}
 
           {audioData && (
-            <div className="flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
-              <span className="text-sm text-gray-600 flex-1">Audio recorded</span>
+            <div className="flex items-center gap-2 p-3 bg-gray-700 border border-gray-600 rounded-md">
+              <span className="text-sm text-gray-300 flex-1">Audio recorded</span>
               <button
                 type="button"
                 onClick={clearAudio}
-                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm"
+                className="bg-red-800 text-white px-3 py-1 rounded hover:bg-red-900 transition-colors duration-200 text-sm"
                 disabled={loading}
               >
                 Remove
               </button>
             </div>
           )}
-
-          {!audioData && (
-            <div className="mt-2">
-              <label className="text-sm text-gray-600">Or upload audio file:</label>
-              <input
-                type="file"
-                accept="audio/*"
-                onChange={handleAudioFileChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md mt-1"
-                disabled={loading}
-              />
-            </div>
-          )}
         </div>
 
         {/* GPS Location */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Location (optional)
           </label>
           <GPSCapture
@@ -277,33 +270,35 @@ export default function MomentForm({ onMomentCreated }) {
 
         {/* Upload Progress */}
         {uploadProgress && (
-          <div className="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded">
+          <div className="mb-4 p-3 bg-blue-900 border border-blue-700 text-blue-200 rounded">
             {uploadProgress}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-4 p-3 bg-red-900 border border-red-700 text-red-200 rounded">
             {error}
           </div>
         )}
 
         {/* Success Message */}
         {success && (
-          <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+          <div className="mb-4 p-3 bg-green-900 border border-green-700 text-green-200 rounded">
             Moment created successfully!
           </div>
         )}
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition font-medium"
-        >
-          {loading ? 'Creating...' : 'Create Moment'}
-        </button>
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
+          >
+            {loading ? 'Creating...' : 'Create Moment'}
+          </button>
+        </div>
       </form>
     </div>
   );
