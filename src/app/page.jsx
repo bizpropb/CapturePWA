@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { fetchMoments as fetchMomentsAPI } from '@/lib/api';
+import { syncPendingMoments } from '@/lib/db';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import MomentForm from '@/components/MomentForm';
 import MomentList from '@/components/MomentList';
 import EditModal from '@/components/EditModal';
@@ -10,22 +13,42 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editingMoment, setEditingMoment] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const isOnline = useOnlineStatus();
 
   // Fetch moments on mount
   useEffect(() => {
     fetchMoments();
   }, []);
 
+  // Sync pending moments when coming back online
+  useEffect(() => {
+    const syncWhenOnline = async () => {
+      if (isOnline && !syncing) {
+        setSyncing(true);
+        try {
+          const syncedCount = await syncPendingMoments();
+          if (syncedCount > 0) {
+            // Refresh moments list after sync
+            await fetchMoments();
+          }
+        } catch (err) {
+          console.error('Sync failed:', err);
+        } finally {
+          setSyncing(false);
+        }
+      }
+    };
+
+    syncWhenOnline();
+  }, [isOnline]);
+
   const fetchMoments = async () => {
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch('/api/moments');
-      if (!response.ok) {
-        throw new Error('Failed to fetch moments');
-      }
-      const data = await response.json();
+      const data = await fetchMomentsAPI();
       setMoments(data);
     } catch (err) {
       setError(err.message);
@@ -77,8 +100,28 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Moment Capture</h1>
-          <p className="text-gray-600 mt-2">Capture and cherish your special moments</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900">Moment Capture</h1>
+              <p className="text-gray-600 mt-2">Capture and cherish your special moments</p>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              {/* Online/Offline Indicator */}
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                isOnline
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+              }`}>
+                {isOnline ? '🟢 Online' : '🔴 Offline'}
+              </div>
+              {/* Syncing Indicator */}
+              {syncing && (
+                <div className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                  🔄 Syncing...
+                </div>
+              )}
+            </div>
+          </div>
         </header>
 
         <MomentForm onMomentCreated={handleMomentCreated} />

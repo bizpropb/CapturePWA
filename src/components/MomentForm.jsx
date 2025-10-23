@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { uploadImage, uploadAudio, validateFileType, validateFileSize, formatFileSize } from '@/lib/cloudinary';
+import { createMoment } from '@/lib/api';
 import CameraCapture from './CameraCapture';
 import GPSCapture from './GPSCapture';
 import AudioRecorder from './AudioRecorder';
@@ -106,28 +107,15 @@ export default function MomentForm({ onMomentCreated }) {
         audioUrl = await uploadAudio(audioData);
       }
 
-      // Create moment
+      // Create moment (with offline support)
       setUploadProgress('Creating moment...');
-      const response = await fetch('/api/moments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          description: description.trim(),
-          gpsLat,
-          gpsLng,
-          imageUrl,
-          audioUrl,
-        }),
+      const newMoment = await createMoment({
+        description: description.trim(),
+        gpsLat,
+        gpsLng,
+        imageUrl,
+        audioUrl,
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to create moment');
-      }
-
-      const newMoment = await response.json();
 
       // Clear form
       setDescription('');

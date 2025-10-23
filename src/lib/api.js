@@ -1,11 +1,20 @@
 /**
  * API client functions for moments CRUD operations
+ * With offline support using IndexedDB
  */
+
+import {
+  getMomentsFromCache,
+  saveMomentToCache,
+  savePendingMoment,
+  getPendingMoments,
+} from './db';
 
 const API_BASE = '/api/moments';
 
 /**
  * Fetch all moments
+ * Falls back to cached data if offline or network error
  * @returns {Promise<Array>} Array of moment objects
  */
 export async function fetchMoments() {
@@ -14,10 +23,23 @@ export async function fetchMoments() {
     if (!response.ok) {
       throw new Error('Failed to fetch moments');
     }
-    return await response.json();
+    const moments = await response.json();
+
+    // Cache the fetched moments
+    for (const moment of moments) {
+      await saveMomentToCache(moment);
+    }
+
+    return moments;
   } catch (error) {
-    console.error('Error fetching moments:', error);
-    throw error;
+    console.error('Error fetching moments, using cache:', error);
+
+    // Fall back to cached data
+    const cachedMoments = await getMomentsFromCache();
+    const pendingMoments = await getPendingMoments();
+
+    // Combine cached and pending moments
+    return [...cachedMoments, ...pendingMoments];
   }
 }
 
@@ -41,8 +63,9 @@ export async function fetchMomentById(id) {
 
 /**
  * Create a new moment
+ * Saves to pending queue if offline
  * @param {Object} data - Moment data { description, gpsLat?, gpsLng?, imageUrl?, audioUrl? }
- * @returns {Promise<Object>} Created moment object
+ * @returns {Promise<Object>} Created moment object (or pending moment)
  */
 export async function createMoment(data) {
   try {
@@ -59,10 +82,25 @@ export async function createMoment(data) {
       throw new Error(error.error || 'Failed to create moment');
     }
 
-    return await response.json();
+    const moment = await response.json();
+
+    // Cache the created moment
+    await saveMomentToCache(moment);
+
+    return moment;
   } catch (error) {
-    console.error('Error creating moment:', error);
-    throw error;
+    console.error('Error creating moment, saving offline:', error);
+
+    // If offline or network error, save to pending queue
+    const localId = await savePendingMoment(data);
+
+    // Return a pending moment object
+    return {
+      localId,
+      ...data,
+      createdAt: new Date().toISOString(),
+      pending: true,
+    };
   }
 }
 
