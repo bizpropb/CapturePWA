@@ -2,71 +2,79 @@
 
 import { useState } from 'react';
 import { uploadImage, uploadAudio, validateFileType, validateFileSize, formatFileSize } from '@/lib/cloudinary';
+import CameraCapture from './CameraCapture';
+import GPSCapture from './GPSCapture';
+import AudioRecorder from './AudioRecorder';
 
 export default function MomentForm({ onMomentCreated }) {
   const [description, setDescription] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [audioFile, setAudioFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imageData, setImageData] = useState(null); // Blob from camera or file
+  const [audioData, setAudioData] = useState(null); // Blob from recorder or file
+  const [gpsLat, setGpsLat] = useState(0);
+  const [gpsLng, setGpsLng] = useState(0);
+  const [useFileUpload, setUseFileUpload] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const handleImageChange = (e) => {
+  const handleCameraCapture = (blob) => {
+    setImageData(blob);
+    setError('');
+  };
+
+  const handleGPSCapture = (lat, lng) => {
+    setGpsLat(lat);
+    setGpsLng(lng);
+  };
+
+  const handleAudioCapture = (blob) => {
+    setAudioData(blob);
+    setError('');
+  };
+
+  const handleImageFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!validateFileType(file, ['image/'])) {
       setError('Please select a valid image file');
       return;
     }
 
-    // Validate file size (10MB)
     if (!validateFileSize(file, 10)) {
       setError(`Image too large (${formatFileSize(file.size)}). Maximum size is 10MB.`);
       return;
     }
 
-    setImageFile(file);
+    setImageData(file);
     setError('');
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
   };
 
-  const handleAudioChange = (e) => {
+  const handleAudioFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!validateFileType(file, ['audio/'])) {
       setError('Please select a valid audio file');
       return;
     }
 
-    // Validate file size (10MB)
     if (!validateFileSize(file, 10)) {
       setError(`Audio file too large (${formatFileSize(file.size)}). Maximum size is 10MB.`);
       return;
     }
 
-    setAudioFile(file);
+    setAudioData(file);
     setError('');
   };
 
   const clearImage = () => {
-    setImageFile(null);
-    setImagePreview('');
+    setImageData(null);
   };
 
   const clearAudio = () => {
-    setAudioFile(null);
+    setAudioData(null);
   };
 
   const handleSubmit = async (e) => {
@@ -86,16 +94,16 @@ export default function MomentForm({ onMomentCreated }) {
       let imageUrl = null;
       let audioUrl = null;
 
-      // Upload image if selected
-      if (imageFile) {
+      // Upload image if captured
+      if (imageData) {
         setUploadProgress('Uploading image...');
-        imageUrl = await uploadImage(imageFile);
+        imageUrl = await uploadImage(imageData);
       }
 
-      // Upload audio if selected
-      if (audioFile) {
+      // Upload audio if recorded
+      if (audioData) {
         setUploadProgress('Uploading audio...');
-        audioUrl = await uploadAudio(audioFile);
+        audioUrl = await uploadAudio(audioData);
       }
 
       // Create moment
@@ -107,6 +115,8 @@ export default function MomentForm({ onMomentCreated }) {
         },
         body: JSON.stringify({
           description: description.trim(),
+          gpsLat,
+          gpsLng,
           imageUrl,
           audioUrl,
         }),
@@ -121,9 +131,10 @@ export default function MomentForm({ onMomentCreated }) {
 
       // Clear form
       setDescription('');
-      setImageFile(null);
-      setAudioFile(null);
-      setImagePreview('');
+      setImageData(null);
+      setAudioData(null);
+      setGpsLat(0);
+      setGpsLng(0);
       setSuccess(true);
       setUploadProgress('');
 
@@ -148,7 +159,7 @@ export default function MomentForm({ onMomentCreated }) {
 
       <form onSubmit={handleSubmit}>
         {/* Description */}
-        <div className="mb-4">
+        <div className="mb-6">
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
             Description *
           </label>
@@ -163,15 +174,52 @@ export default function MomentForm({ onMomentCreated }) {
           />
         </div>
 
-        {/* Image Upload */}
-        <div className="mb-4">
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-            Image (optional)
+        {/* Camera / Image Upload */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Photo (optional)
           </label>
-          {imagePreview ? (
+
+          {!imageData && !useFileUpload && (
+            <CameraCapture
+              onCapture={handleCameraCapture}
+              onError={(err) => setError(err)}
+            />
+          )}
+
+          {!imageData && !useFileUpload && (
+            <button
+              type="button"
+              onClick={() => setUseFileUpload(true)}
+              className="mt-2 text-sm text-blue-600 hover:text-blue-700"
+            >
+              Or upload from files
+            </button>
+          )}
+
+          {(useFileUpload && !imageData) && (
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageFileChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setUseFileUpload(false)}
+                className="mt-2 text-sm text-blue-600 hover:text-blue-700"
+              >
+                Or use camera
+              </button>
+            </div>
+          )}
+
+          {imageData && (
             <div className="relative">
               <img
-                src={imagePreview}
+                src={URL.createObjectURL(imageData)}
                 alt="Preview"
                 className="w-full h-48 object-cover rounded-md"
               />
@@ -184,26 +232,25 @@ export default function MomentForm({ onMomentCreated }) {
                 Remove
               </button>
             </div>
-          ) : (
-            <input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={loading}
-            />
           )}
         </div>
 
-        {/* Audio Upload */}
-        <div className="mb-4">
-          <label htmlFor="audio" className="block text-sm font-medium text-gray-700 mb-2">
+        {/* Audio Recorder / Upload */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Audio (optional)
           </label>
-          {audioFile ? (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">{audioFile.name}</span>
+
+          {!audioData && (
+            <AudioRecorder
+              onCapture={handleAudioCapture}
+              onError={(err) => setError(err)}
+            />
+          )}
+
+          {audioData && (
+            <div className="flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
+              <span className="text-sm text-gray-600 flex-1">Audio recorded</span>
               <button
                 type="button"
                 onClick={clearAudio}
@@ -213,16 +260,31 @@ export default function MomentForm({ onMomentCreated }) {
                 Remove
               </button>
             </div>
-          ) : (
-            <input
-              id="audio"
-              type="file"
-              accept="audio/*"
-              onChange={handleAudioChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={loading}
-            />
           )}
+
+          {!audioData && (
+            <div className="mt-2">
+              <label className="text-sm text-gray-600">Or upload audio file:</label>
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={handleAudioFileChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md mt-1"
+                disabled={loading}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* GPS Location */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Location (optional)
+          </label>
+          <GPSCapture
+            onCapture={handleGPSCapture}
+            onError={(err) => setError(err)}
+          />
         </div>
 
         {/* Upload Progress */}
@@ -250,7 +312,7 @@ export default function MomentForm({ onMomentCreated }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+          className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition font-medium"
         >
           {loading ? 'Creating...' : 'Create Moment'}
         </button>
