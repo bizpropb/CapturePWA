@@ -29,12 +29,6 @@ export default function GPSCapture({ onCapture, onError }) {
     } catch (err) {
       setError(err.message);
       if (onError) onError(err.message);
-
-      // Set to default 0,0 on error
-      setLocation({ latitude: 0, longitude: 0, accuracy: null });
-      if (onCapture) {
-        onCapture(0, 0);
-      }
     } finally {
       setLoading(false);
     }
@@ -42,9 +36,7 @@ export default function GPSCapture({ onCapture, onError }) {
 
   const clearLocation = () => {
     setLocation(null);
-    if (onCapture) {
-      onCapture(0, 0);
-    }
+    setError('');
   };
 
   if (!isSupported) {
@@ -93,7 +85,7 @@ export default function GPSCapture({ onCapture, onError }) {
             {loading ? 'Getting Location...' : 'Get Current Location'}
           </button>
           {error && (
-            <p className="mt-2 text-sm text-red-600">{error}</p>
+            <p className="mt-2 text-sm text-red-400">{error}</p>
           )}
         </div>
       )}
