@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { fetchMoments as fetchMomentsAPI } from '@/lib/api';
 import { syncPendingMoments } from '@/lib/db';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
-import MomentForm from '@/components/MomentForm';
-import MomentList from '@/components/MomentList';
-import EditModal from '@/components/EditModal';
+import MomentForm from '@/components/capture/MomentForm';
+import MomentList from '@/components/moments/MomentList';
+import EditModal from '@/components/moments/EditModal';
 
 export default function Home() {
   const [moments, setMoments] = useState([]);
