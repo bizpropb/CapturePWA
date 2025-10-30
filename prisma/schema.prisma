@@ -12,13 +12,14 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String   @default("Default User")
-  email     String?  @unique
-  settings  String   @default("{}")  // JSON string
-  moments   Moment[]
-  tags      Tag[]
-  createdAt DateTime @default(now())
+  id                Int                @id @default(autoincrement())
+  name              String             @default("Default User")
+  email             String?            @unique
+  settings          String             @default("{}")  // JSON string
+  moments           Moment[]
+  tags              Tag[]
+  pushSubscriptions PushSubscription[]
+  createdAt         DateTime           @default(now())
 }
 
 model Moment {
@@ -76,4 +77,16 @@ model MomentTag {
   @@id([momentId, tagId])
   @@index([momentId])
   @@index([tagId])
+}
+
+model PushSubscription {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @default(1)
+  endpoint  String   @unique
+  auth      String
+  p256dh    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
