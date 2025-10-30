@@ -81,6 +81,19 @@ export async function getPendingMoments() {
 }
 
 /**
+ * Get count of pending moments
+ * @returns {Promise<number>} Number of pending moments
+ */
+export async function getPendingMomentsCount() {
+  try {
+    return await db.pendingMoments.count();
+  } catch (error) {
+    console.error('Failed to get pending moments count:', error);
+    return 0;
+  }
+}
+
+/**
  * Delete a pending moment after successful upload
  * @param {number} localId - Local ID of pending moment
  */

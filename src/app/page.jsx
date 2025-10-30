@@ -5,6 +5,7 @@ import { fetchMoments as fetchMomentsAPI } from '@/lib/api';
 import { syncPendingMoments } from '@/lib/db';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { MainLayout, PageHeader, StatusIndicator } from '@/components/layout';
+import SyncIndicator from '@/components/layout/SyncIndicator';
 import MomentForm from '@/components/capture/MomentForm';
 import MomentList from '@/components/moments/MomentList';
 import EditModal from '@/components/moments/EditModal';
@@ -103,7 +104,12 @@ export default function Home() {
         <PageHeader
           title="Dashboard"
           description="Quick overview and capture"
-          actions={<StatusIndicator syncing={syncing} />}
+          actions={
+            <div className="flex items-center gap-3">
+              <StatusIndicator syncing={syncing} />
+              <SyncIndicator />
+            </div>
+          }
         />
 
         <div className="flex flex-col lg:flex-row gap-6">
