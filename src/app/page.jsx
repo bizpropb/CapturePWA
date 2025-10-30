@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { fetchMoments as fetchMomentsAPI } from '@/lib/api';
 import { syncPendingMoments } from '@/lib/db';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { MainLayout, PageHeader, StatusIndicator } from '@/components/layout';
 import MomentForm from '@/components/capture/MomentForm';
 import MomentList from '@/components/moments/MomentList';

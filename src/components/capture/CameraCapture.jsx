@@ -8,10 +8,15 @@ export default function CameraCapture({ onCapture, onError }) {
   const [stream, setStream] = useState(null);
   const [capturedImage, setCapturedImage] = useState(null);
   const [error, setError] = useState('');
-  const [isSupported] = useState(checkCameraSupport());
+  const [isSupported, setIsSupported] = useState(true); // Optimistic, check after mount
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+
+  // Check camera support after component mounts (client-side only)
+  useEffect(() => {
+    setIsSupported(checkCameraSupport());
+  }, []);
 
   useEffect(() => {
     return () => {

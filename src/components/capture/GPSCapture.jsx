@@ -1,13 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { checkGPSSupport, requestLocation } from '@/lib/hardware-utils';
 
 export default function GPSCapture({ onCapture, onError }) {
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isSupported] = useState(checkGPSSupport());
+  const [isSupported, setIsSupported] = useState(true); // Optimistic, check after mount
+
+  // Check GPS support after component mounts (client-side only)
+  useEffect(() => {
+    setIsSupported(checkGPSSupport());
+  }, []);
 
   const getLocation = async () => {
     setLoading(true);

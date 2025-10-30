@@ -9,12 +9,17 @@ export default function AudioRecorder({ onCapture, onError }) {
   const [audioUrl, setAudioUrl] = useState('');
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState('');
-  const [isSupported] = useState(checkAudioSupport());
+  const [isSupported, setIsSupported] = useState(true); // Optimistic, check after mount
 
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const streamRef = useRef(null);
   const timerRef = useRef(null);
+
+  // Check audio support after component mounts (client-side only)
+  useEffect(() => {
+    setIsSupported(checkAudioSupport());
+  }, []);
 
   useEffect(() => {
     return () => {
