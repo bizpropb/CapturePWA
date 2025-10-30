@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { MainLayout, PageHeader } from '@/components/layout';
+import { InstallButton } from '@/components/layout/InstallPrompt';
 import Card from '@/components/ui/Card';
 
 // Load PushNotificationManager only on client-side to avoid hydration issues
@@ -37,18 +38,13 @@ export default function SettingsPage() {
               <PushNotificationManager />
             </div>
 
-            {/* Install App (placeholder) */}
+            {/* Install App */}
             <div className="pt-6 border-t border-gray-700">
               <h3 className="text-lg font-semibold mb-2">Install App</h3>
               <p className="text-sm text-gray-400 mb-3">
                 Install this app on your device for a native experience.
               </p>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                disabled
-              >
-                Install (Coming Soon)
-              </button>
+              <InstallButton />
             </div>
 
             {/* Badge API (placeholder) */}
