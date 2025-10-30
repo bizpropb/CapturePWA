@@ -4,8 +4,8 @@
   "description": "Capture and cherish your special moments with photos, audio, and location",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "background_color": "#0a0a0a",
+  "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
   "icons": [
     {
