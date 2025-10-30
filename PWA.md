@@ -131,6 +131,28 @@ This app demonstrates:
 - **Service Worker**: Cache assets for offline use
 - **Install Prompt**: Add to home screen
 
+### Next.js PWA Configuration
+
+The PWA features are implemented using Next.js PWA plugin:
+
+```javascript
+// next.config.mjs
+import withPWA from 'next-pwa';
+
+export default withPWA({
+  dest: 'public',        // Service worker and manifest destination
+  disable: process.env.NODE_ENV === 'development',  // Disable in development
+  register: true,        // Auto-register service worker
+  skipWaiting: true      // Immediate service worker activation
+})(nextConfig);
+```
+
+This configuration:
+- **Generates service worker** automatically in `public/sw.js`
+- **Creates web manifest** in `public/manifest.json`
+- **Precaches assets** for offline functionality
+- **Handles installation** and updates
+
 ### Limitations Demonstrated
 - Permission prompts required for each hardware feature
 - Fallbacks needed when hardware unavailable
