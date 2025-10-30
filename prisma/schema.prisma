@@ -11,6 +11,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @default("Default User")
+  email     String?  @unique
+  settings  String   @default("{}")  // JSON string
+  moments   Moment[]
+  tags      Tag[]
+  createdAt DateTime @default(now())
+}
+
 model Moment {
   id          Int      @id @default(autoincrement())
   description String
@@ -18,8 +28,52 @@ model Moment {
   gpsLng      Float    @default(0.0)
   imageUrl    String?
   audioUrl    String?
+  videoUrl    String?
+  mood        String?  // e.g., "happy", "sad", "excited", "calm"
+  weather     String?  // e.g., "sunny", "rainy", "cloudy"
+  isPublic    Boolean  @default(false)
+  shareToken  String?  @unique
+  viewCount   Int      @default(0)
+  userId      Int      @default(1)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags        MomentTag[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([createdAt])
+  @@index([userId])
+  @@index([shareToken])
+}
+
+model Tag {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  color     String      @default("#3b82f6")
+  userId    Int         @default(1)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moments   MomentTag[]
+  createdAt DateTime    @default(now())
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  icon        String   @default("📁")
+  description String?
+  moments     Moment[]
+  createdAt   DateTime @default(now())
+}
+
+model MomentTag {
+  momentId  Int
+  tagId     Int
+  moment    Moment   @relation(fields: [momentId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([momentId, tagId])
+  @@index([momentId])
+  @@index([tagId])
 }
