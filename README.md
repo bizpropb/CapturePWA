@@ -43,6 +43,7 @@ A Progressive Web App built with Next.js and Prisma for capturing and storing li
 - 💾 **Offline Support**: Create moments while offline, auto-sync when reconnected
 - 🔄 **Auto Sync**: Pending moments automatically upload when back online
 - 📱 **PWA Installation**: Install as native app on desktop and mobile
+- 🔔 **Push Notifications**: Receive notifications
 - 🌐 **Network Status**: Visual indicators for online/offline/syncing states
 - ☁️ **Cloud Storage**: Images and audio stored on Cloudinary CDN
 
@@ -53,10 +54,11 @@ A Progressive Web App built with Next.js and Prisma for capturing and storing li
 ### Prerequisites
 - Node.js 18+ and npm
 - Port 3000 available
+- Cloudinary account (free tier works)
 
 ### Environment Variables
 
-Copy `.env.example` file to `.env` and fill in your own values (Cloudinary registration is free):
+Copy `.env.example` to `.env` and fill in your Cloudinary credentials:
 
 ```env
 DATABASE_URL="file:./dev.db"
@@ -66,103 +68,115 @@ CLOUDINARY_API_SECRET="your_api_secret"
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your_cloud_name"
 ```
 
-### Installation & Start
+### Installation
 
 ```bash
-# Install dependencies
-npm install
-
-# Set up database
-npx prisma generate
-npx prisma db push
-
-# Start development server (auto-reloads on frontend changes, API routes need manual refresh)
-npm run dev
+npm install # Install dependencies
+npx prisma generate # Set up database
+npx prisma db push # Set up database
 ```
-
-⚠️ **Important: Hardware Access Security**
-
-Next.js will display two URLs when starting:
-- `http://localhost:3000` - **Use this one**
-- `http://192.168.x.x:3000` - **Camera/mic/GPS will NOT work here**
-
-**Why?** Browser security requires a "secure context" (localhost or HTTPS) for hardware access APIs. The network IP (`192.168.x.x`) is not secure context, so camera, microphone, and GPS features will be blocked by the browser.
-
-**To test on mobile devices:**
-- Option 1: Use `ngrok` to create HTTPS tunnel: `ngrok http 3000`
-- Option 2: Deploy to production with automatic HTTPS
-- Option 3: Set up local HTTPS with self-signed certificates (advanced)
-
-### Access
-
-- **Application**: http://localhost:3000
-- **Database**: SQLite file at `prisma/dev.db`
 
 ---
 
 ## Production Build
-
-⚠️ **Service Worker Note**: The PWA service worker (for offline caching and installability) is **ONLY active in production builds**, not in development mode. To test PWA features like offline support and "Add to Home Screen":
+>Do not use DevMode, since it will disable PWA features, unless absolutely necessary!
 
 ```bash
-# Build production version
-npm run build
-
-# Start production server
-npm start
+npm run build # Build production version
+npm start # Start production server
 ```
 
-Then visit http://localhost:3000 to test PWA installation and service worker caching.
+**Access:** http://localhost:3000
+
+**PWA features that WORK in production:**
+- ✅ Install prompts and install buttons
+- ✅ Service worker registration
+- ✅ Offline caching and background sync
+- ✅ Push notifications
+
+---
+
+## Development Build
+>Again, do not use DevMode, since it will disable PWA features, unless absolutely necessary! Use Production Build instead!
+
+```bash
+npm run dev # Start development server (for coding only)
+```
+
+**Access:** http://localhost:3000
+
+**PWA features DISABLED in development:**
+- ❌ Install prompts
+- ❌ Service worker
+- ❌ Offline caching
+- ❌ Background sync
+- ❌ Push notifications
+
+**Why disabled?** next-pwa disables service workers in dev to avoid caching issues during development.
+
+### Hardware Access Note
+
+Next.js displays two URLs:
+- `http://localhost:3000` - **✅ Use this (camera/mic/GPS works)**
+- `http://192.168.x.x:3000` - **❌ Hardware won't work**
+
+**Why?** Browser requires secure context (localhost or HTTPS) for hardware APIs.
+
+**Mobile testing:** Use `ngrok http 3000` for HTTPS tunnel.
 
 ---
 
 ## Testing
 
-### Testing Offline Mode
+### Test Offline Mode
 
-1. Build and start in production mode (`npm run build && npm start`)
-2. Open browser DevTools (F12)
-3. Go to Network tab
-4. Toggle "Offline" checkbox
-5. Create moments - they'll be queued in IndexedDB
-6. Toggle back online - moments automatically sync to server
+1. Run: `npm run build && npm start`
+2. DevTools (F12) → Network → Toggle "Offline"
+3. Create moments (queued in IndexedDB)
+4. Toggle online (auto-syncs)
+
+### Test PWA Installation
+
+1. Run: `npm run build && npm start`
+2. Wait 3 seconds for install banner
+3. Or go to Settings → "Install App"
 
 ---
 
 ## Debugging
 
+### View Database
+```bash
+npx prisma studio # Open Prisma Studio
+```
+
 ### Clear Database
-
 ```bash
-# Remove SQLite database file
-rm prisma/dev.db
-
-# Recreate schema
-npx prisma db push
+rm prisma/dev.db # Remove database
+npx prisma db push # Recreate schema
 ```
 
-### View Database Content
+---
+
+## Deployment
+
+Recommended: Vercel
 
 ```bash
-# Open Prisma Studio
-npx prisma studio
+vercel # Deploy to Vercel
 ```
+
+Update environment variables in Vercel dashboard.
 
 ---
 
 ## Optional: Database Migration
 
-### Migrating to PostgreSQL (Production)
-
-1. Update `DATABASE_URL` in `.env` to PostgreSQL connection string
-2. Run migration:
-```bash
-npx prisma migrate dev
-```
+### Switch to PostgreSQL
+1. Update `DATABASE_URL` in `.env`
+2. Run: `npx prisma migrate dev`
 
 ### Schema Changes
-
-After modifying `prisma/schema.prisma`:
 ```bash
-npx prisma db push
+npx prisma db push # Recreate schema
 ```
