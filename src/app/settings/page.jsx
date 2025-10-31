@@ -3,6 +3,7 @@
 import { MainLayout, PageHeader } from '@/components/layout';
 import { InstallButton } from '@/components/layout/InstallPrompt';
 import Card from '@/components/ui/Card';
+import SensorDemo from '@/components/sensors/SensorDemo';
 
 export default function SettingsPage() {
   return (
@@ -44,6 +45,12 @@ export default function SettingsPage() {
               Badge controls available in development mode
             </p>
           </Card>
+
+          {/* Device Sensors */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4 px-1">Device Sensors</h2>
+            <SensorDemo />
+          </div>
 
           {/* About Section */}
           <Card>

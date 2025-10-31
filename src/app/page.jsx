@@ -5,6 +5,7 @@ import { fetchMoments as fetchMomentsAPI } from '@/lib/api';
 import { syncPendingMoments } from '@/lib/db';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { useAutoBadge } from '@/hooks/useBadge';
+import { useShakeToRefresh } from '@/hooks/useShakeToRefresh';
 import { MainLayout, PageHeader, StatusIndicator } from '@/components/layout';
 import SyncIndicator from '@/components/layout/SyncIndicator';
 import MomentForm from '@/components/capture/MomentForm';
@@ -17,11 +18,20 @@ export default function Home() {
   const [error, setError] = useState('');
   const [editingMoment, setEditingMoment] = useState(null);
   const [syncing, setSyncing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const isOnline = useOnlineStatus();
 
   // Automatically manage app badge based on pending moments count
   // Badge updates when syncing state changes, and clears when app is opened
   useAutoBadge([syncing]);
+
+  // Shake to refresh moments
+  const shake = useShakeToRefresh(async () => {
+    setRefreshing(true);
+    await fetchMoments();
+    // Show feedback for a moment
+    setTimeout(() => setRefreshing(false), 1000);
+  });
 
   // Fetch moments on mount
   useEffect(() => {
@@ -106,11 +116,28 @@ export default function Home() {
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Shake-to-refresh indicator */}
+        {(shake.isShaking || refreshing) && (
+          <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 animate-bounce">
+            <span className="text-xl">🔄</span>
+            <span className="font-semibold">Refreshing...</span>
+          </div>
+        )}
+
         <PageHeader
           title="Dashboard"
           description="Quick overview and capture"
           actions={
             <div className="flex items-center gap-3">
+              {shake.isSupported && shake.hasPermission && (
+                <button
+                  onClick={shake.requestPermission}
+                  className="text-xs text-neutral-400 hover:text-white transition"
+                  title="Shake to refresh enabled"
+                >
+                  📳
+                </button>
+              )}
               <StatusIndicator syncing={syncing} />
               <SyncIndicator />
             </div>
