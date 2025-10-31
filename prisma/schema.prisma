@@ -23,29 +23,33 @@ model User {
 }
 
 model Moment {
-  id          Int      @id @default(autoincrement())
-  description String
-  gpsLat      Float    @default(0.0)
-  gpsLng      Float    @default(0.0)
-  imageUrl    String?
-  audioUrl    String?
-  videoUrl    String?
-  mood        String?  // e.g., "happy", "sad", "excited", "calm"
-  weather     String?  // e.g., "sunny", "rainy", "cloudy"
-  isPublic    Boolean  @default(false)
-  shareToken  String?  @unique
-  viewCount   Int      @default(0)
-  userId      Int      @default(1)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId  Int?
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  tags        MomentTag[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  description     String
+  gpsLat          Float    @default(0.0)
+  gpsLng          Float    @default(0.0)
+  gpsAccuracy     Float?   // GPS accuracy in meters
+  locationName    String?  // Short address (e.g., "Main St, New York, USA")
+  locationAddress String?  // Full address JSON string
+  imageUrl        String?
+  audioUrl        String?
+  videoUrl        String?
+  mood            String?  // e.g., "happy", "sad", "excited", "calm"
+  weather         String?  // e.g., "sunny", "rainy", "cloudy"
+  isPublic        Boolean  @default(false)
+  shareToken      String?  @unique
+  viewCount       Int      @default(0)
+  userId          Int      @default(1)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId      Int?
+  category        Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags            MomentTag[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([createdAt])
   @@index([userId])
   @@index([shareToken])
+  @@index([gpsLat, gpsLng])
 }
 
 model Tag {

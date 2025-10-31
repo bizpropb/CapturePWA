@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import ShareButton from '@/components/ui/ShareButton';
+import MapView from '@/components/capture/MapView';
 
 export default function MomentCard({ moment, onDelete, onEdit }) {
+  const [showMap, setShowMap] = useState(false);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -36,6 +39,16 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
           <p className="text-gray-100 text-lg whitespace-pre-wrap">{moment.description}</p>
         </div>
 
+        {/* Video Player */}
+        {moment.videoUrl && (
+          <div className="mb-3">
+            <video controls className="w-full rounded-lg">
+              <source src={moment.videoUrl} type="video/mp4" />
+              Your browser does not support the video element.
+            </video>
+          </div>
+        )}
+
         {/* Audio Player */}
         {moment.audioUrl && (
           <div className="mb-3">
@@ -46,17 +59,76 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
           </div>
         )}
 
+        {/* Location Display */}
+        {hasLocation && (
+          <div className="mb-3 border border-gray-700 rounded-lg overflow-hidden">
+            {/* Location Header */}
+            <button
+              onClick={() => setShowMap(!showMap)}
+              className="w-full bg-gray-900 p-3 text-left hover:bg-gray-850 transition-colors duration-200"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-300 flex items-center gap-2">
+                    📍 Location
+                  </p>
+                  {moment.locationName && (
+                    <p className="text-sm text-gray-400 mt-1">
+                      {moment.locationName}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-500 font-mono mt-1">
+                    {moment.gpsLat.toFixed(6)}, {moment.gpsLng.toFixed(6)}
+                  </p>
+                  {moment.gpsAccuracy && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Accuracy: ±{Math.round(moment.gpsAccuracy)}m
+                    </p>
+                  )}
+                </div>
+                <span className="text-gray-400 text-sm">
+                  {showMap ? '▼' : '▶'}
+                </span>
+              </div>
+            </button>
+
+            {/* Embedded Map */}
+            {showMap && (
+              <div className="border-t border-gray-700">
+                <MapView
+                  lat={moment.gpsLat}
+                  lng={moment.gpsLng}
+                  zoom={15}
+                  height={250}
+                  showMarker={true}
+                  popupText={moment.locationName || moment.description}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Metadata */}
         <div className="text-sm text-gray-400 space-y-1">
           <p>
             <span className="font-medium">Created:</span> {formatDate(moment.createdAt)}
           </p>
 
-          {hasLocation ? (
+          {/* Mood */}
+          {moment.mood && (
             <p>
-              <span className="font-medium">Location:</span> {moment.gpsLat.toFixed(4)}, {moment.gpsLng.toFixed(4)}
+              <span className="font-medium">Mood:</span> {moment.mood}
             </p>
-          ) : (
+          )}
+
+          {/* Weather */}
+          {moment.weather && (
+            <p>
+              <span className="font-medium">Weather:</span> {moment.weather}
+            </p>
+          )}
+
+          {!hasLocation && (
             <p className="text-gray-500">No location</p>
           )}
         </div>
