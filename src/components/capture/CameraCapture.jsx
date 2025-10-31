@@ -24,8 +24,17 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
   const [capabilities, setCapabilities] = useState(null);
 
   // Mode states
-  const [mode, setMode] = useState('photo'); // 'photo' or 'qr'
+  const [mode, setMode] = useState('photo'); // 'photo', 'video', or 'qr'
   const [qrResult, setQrResult] = useState(null);
+
+  // Video recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [recordedChunks, setRecordedChunks] = useState([]);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [recordedVideoUrl, setRecordedVideoUrl] = useState(null);
+  const [videoBlob, setVideoBlob] = useState(null);
+  const [estimatedSize, setEstimatedSize] = useState(0);
 
   // Filter & Edit states
   const [activeFilter, setActiveFilter] = useState('none');
@@ -36,6 +45,7 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const qrScanIntervalRef = useRef(null);
+  const recordingTimerRef = useRef(null);
 
   // Check camera support after component mounts
   useEffect(() => {
@@ -51,8 +61,14 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
       if (qrScanIntervalRef.current) {
         clearInterval(qrScanIntervalRef.current);
       }
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
     };
-  }, [stream]);
+  }, [stream, mediaRecorder]);
 
   // Get camera capabilities
   const updateCapabilities = useCallback((mediaStream) => {
@@ -74,12 +90,16 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
   const startCamera = async () => {
     setError('');
     setQrResult(null);
+    setRecordedVideoUrl(null);
+    setVideoBlob(null);
     try {
       const constraints = {
         video: {
           facingMode: facingMode,
           zoom: capabilities?.zoom ? zoomLevel : undefined,
-        }
+        },
+        // Add audio for video mode
+        audio: mode === 'video'
       };
 
       const mediaStream = await requestCamera(constraints);
@@ -95,6 +115,11 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
       // Start QR scanning if in QR mode
       if (mode === 'qr') {
         startQRScanning();
+      }
+
+      // Setup MediaRecorder for video mode
+      if (mode === 'video') {
+        setupMediaRecorder(mediaStream);
       }
     } catch (err) {
       setError(err.message);
@@ -276,6 +301,150 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
     }, 100);
   };
 
+  // Video Recording Functions
+  const setupMediaRecorder = (mediaStream) => {
+    try {
+      const options = { mimeType: 'video/webm;codecs=vp9' };
+
+      // Fallback to vp8 if vp9 not supported
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options.mimeType = 'video/webm;codecs=vp8';
+      }
+
+      // Fallback to default if webm not supported
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options.mimeType = 'video/webm';
+      }
+
+      const recorder = new MediaRecorder(mediaStream, options);
+      const chunks = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          chunks.push(event.data);
+          // Estimate file size (approximate)
+          setEstimatedSize(prev => prev + event.data.size);
+        }
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const videoUrl = URL.createObjectURL(blob);
+        setRecordedVideoUrl(videoUrl);
+        setVideoBlob(blob);
+        setRecordedChunks([]);
+        setEstimatedSize(0);
+        stopCamera();
+      };
+
+      setMediaRecorder(recorder);
+      setRecordedChunks([]);
+      setEstimatedSize(0);
+    } catch (err) {
+      setError('MediaRecorder not supported: ' + err.message);
+    }
+  };
+
+  const startRecording = () => {
+    if (!mediaRecorder) return;
+
+    try {
+      mediaRecorder.start(100); // Collect data every 100ms
+      setIsRecording(true);
+      setRecordingTime(0);
+
+      // Start timer
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime(prev => {
+          const newTime = prev + 1;
+
+          // Stop recording at 5 minutes (300 seconds) or 100MB
+          if (newTime >= 300 || estimatedSize >= 100 * 1024 * 1024) {
+            stopRecording();
+          }
+
+          return newTime;
+        });
+      }, 1000);
+    } catch (err) {
+      setError('Could not start recording: ' + err.message);
+    }
+  };
+
+  const stopRecording = () => {
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+
+    try {
+      mediaRecorder.stop();
+      setIsRecording(false);
+
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    } catch (err) {
+      setError('Could not stop recording: ' + err.message);
+    }
+  };
+
+  // Format time as MM:SS
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Format file size
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  // Generate video thumbnail
+  const generateVideoThumbnail = (videoElement) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+
+      const context = canvas.getContext('2d');
+      context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, 'image/jpeg', 0.7);
+    });
+  };
+
+  // Confirm video
+  const confirmVideo = async () => {
+    if (!videoBlob) return;
+
+    // Generate thumbnail
+    const videoElement = document.querySelector('video.preview-video');
+    let thumbnailBlob = null;
+
+    if (videoElement) {
+      thumbnailBlob = await generateVideoThumbnail(videoElement);
+    }
+
+    if (onCapture) {
+      onCapture({ video: videoBlob, thumbnail: thumbnailBlob });
+    }
+
+    setRecordedVideoUrl(null);
+    setVideoBlob(null);
+    setRecordingTime(0);
+  };
+
+  // Retake video
+  const retakeVideo = () => {
+    setRecordedVideoUrl(null);
+    setVideoBlob(null);
+    setRecordingTime(0);
+    startCamera();
+  };
+
   // Edit captured photo
   const editPhoto = (index) => {
     setCurrentEditingIndex(index);
@@ -377,6 +546,49 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
         >
           Scan Another
         </button>
+      </div>
+    );
+  }
+
+  // Video preview view
+  if (recordedVideoUrl) {
+    return (
+      <div className="space-y-4">
+        <div className="relative bg-black rounded-md overflow-hidden">
+          <video
+            src={recordedVideoUrl}
+            controls
+            className="w-full preview-video"
+          />
+        </div>
+
+        <div className="flex gap-2 text-sm text-white">
+          <div className="flex-1 bg-gray-700 p-2 rounded-md text-center">
+            <div className="font-semibold">Duration</div>
+            <div>{formatTime(recordingTime)}</div>
+          </div>
+          <div className="flex-1 bg-gray-700 p-2 rounded-md text-center">
+            <div className="font-semibold">Size</div>
+            <div>{formatFileSize(videoBlob?.size || 0)}</div>
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={confirmVideo}
+            className="flex-1 bg-green-800 text-white py-2 px-4 rounded-md hover:bg-green-900 font-medium"
+          >
+            Confirm Video
+          </button>
+          <button
+            type="button"
+            onClick={retakeVideo}
+            className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700"
+          >
+            Retake
+          </button>
+        </div>
       </div>
     );
   }
@@ -539,11 +751,11 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
     return (
       <div className="space-y-4">
         {/* Mode selector */}
-        <div className="flex gap-2">
+        <div className="grid grid-cols-3 gap-2">
           <button
             type="button"
             onClick={() => setMode('photo')}
-            className={`flex-1 py-2 px-4 rounded-md transition-colors duration-200 ${
+            className={`py-2 px-4 rounded-md transition-colors duration-200 ${
               mode === 'photo'
                 ? 'bg-blue-900 text-white'
                 : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -553,14 +765,25 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
           </button>
           <button
             type="button"
+            onClick={() => setMode('video')}
+            className={`py-2 px-4 rounded-md transition-colors duration-200 ${
+              mode === 'video'
+                ? 'bg-blue-900 text-white'
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            🎥 Video
+          </button>
+          <button
+            type="button"
             onClick={() => setMode('qr')}
-            className={`flex-1 py-2 px-4 rounded-md transition-colors duration-200 ${
+            className={`py-2 px-4 rounded-md transition-colors duration-200 ${
               mode === 'qr'
                 ? 'bg-blue-900 text-white'
                 : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
             }`}
           >
-            📱 QR Code
+            📱 QR
           </button>
         </div>
 
@@ -569,7 +792,9 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
           onClick={startCamera}
           className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200"
         >
-          {mode === 'photo' ? 'Open Camera' : 'Start QR Scanner'}
+          {mode === 'photo' && 'Open Camera'}
+          {mode === 'video' && 'Start Video Camera'}
+          {mode === 'qr' && 'Start QR Scanner'}
         </button>
 
         {error && (
@@ -629,9 +854,26 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
         {/* Mode indicator */}
         <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
           <div className="bg-black/50 text-white px-3 py-1 rounded-full text-xs backdrop-blur-sm">
-            {mode === 'qr' ? '📱 Scanning QR Code...' : '📷 Photo Mode'}
+            {mode === 'qr' && '📱 Scanning QR Code...'}
+            {mode === 'photo' && '📷 Photo Mode'}
+            {mode === 'video' && !isRecording && '🎥 Video Mode'}
+            {mode === 'video' && isRecording && (
+              <span className="flex items-center gap-2">
+                <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                REC {formatTime(recordingTime)}
+              </span>
+            )}
           </div>
         </div>
+
+        {/* File size indicator (video recording) */}
+        {mode === 'video' && isRecording && (
+          <div className="absolute bottom-2 left-2">
+            <div className="bg-black/50 text-white px-3 py-1 rounded-full text-xs backdrop-blur-sm">
+              {formatFileSize(estimatedSize)}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Zoom control (photo mode only) */}
@@ -683,10 +925,29 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
             📸 Capture
           </button>
         )}
+        {mode === 'video' && !isRecording && (
+          <button
+            type="button"
+            onClick={startRecording}
+            className="flex-1 bg-red-800 text-white py-3 px-4 rounded-md hover:bg-red-900 transition-colors duration-200 font-medium"
+          >
+            ⏺ Start Recording
+          </button>
+        )}
+        {mode === 'video' && isRecording && (
+          <button
+            type="button"
+            onClick={stopRecording}
+            className="flex-1 bg-yellow-700 text-white py-3 px-4 rounded-md hover:bg-yellow-800 transition-colors duration-200 font-medium animate-pulse"
+          >
+            ⏹ Stop Recording
+          </button>
+        )}
         <button
           type="button"
           onClick={stopCamera}
           className="flex-1 bg-red-950 text-white py-3 px-4 rounded-md hover:bg-red-900 transition-colors duration-200"
+          disabled={isRecording}
         >
           Cancel
         </button>

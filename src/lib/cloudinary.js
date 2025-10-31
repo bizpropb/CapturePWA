@@ -21,9 +21,18 @@ export async function uploadAudio(file) {
 }
 
 /**
+ * Upload a video file to Cloudinary
+ * @param {File|Blob} file - Video file or blob to upload
+ * @returns {Promise<string>} The secure URL of the uploaded video
+ */
+export async function uploadVideo(file) {
+  return uploadFile(file, 'video');
+}
+
+/**
  * Generic file upload function
  * @param {File|Blob} file - File or blob to upload
- * @param {string} type - Type of file ('image' or 'audio')
+ * @param {string} type - Type of file ('image', 'audio', or 'video')
  * @returns {Promise<string>} The secure URL of the uploaded file
  */
 async function uploadFile(file, type) {

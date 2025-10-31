@@ -10,7 +10,7 @@ cloudinary.config({
 
 /**
  * POST /api/upload
- * Upload a file (image or audio) to Cloudinary
+ * Upload a file (image, audio, or video) to Cloudinary
  * Expects multipart/form-data with a 'file' field and optional 'type' field
  */
 export async function POST(request) {
@@ -25,7 +25,7 @@ export async function POST(request) {
 
     const formData = await request.formData();
     const file = formData.get('file');
-    const type = formData.get('type') || 'auto'; // 'image', 'audio', or 'auto'
+    const type = formData.get('type') || 'auto'; // 'image', 'audio', 'video', or 'auto'
 
     if (!file) {
       return NextResponse.json(
@@ -34,11 +34,14 @@ export async function POST(request) {
       );
     }
 
-    // Validate file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // Validate file size (max 100MB for video, 10MB for others)
+    const isVideo = type === 'video' || file.type.startsWith('video/');
+    const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024; // 100MB for video, 10MB for others
+
     if (file.size > maxSize) {
+      const maxSizeStr = isVideo ? '100MB' : '10MB';
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 10MB.' },
+        { error: `File too large. Maximum size is ${maxSizeStr}.` },
         { status: 400 }
       );
     }
@@ -60,6 +63,9 @@ export async function POST(request) {
     } else if (type === 'audio' || mimeType.startsWith('audio/')) {
       resourceType = 'video'; // Cloudinary uses 'video' for audio files
       folder = 'moments/audio';
+    } else if (type === 'video' || mimeType.startsWith('video/')) {
+      resourceType = 'video';
+      folder = 'moments/videos';
     }
 
     // Upload to Cloudinary
@@ -70,6 +76,8 @@ export async function POST(request) {
         { width: 1000, height: 1000, crop: 'limit' }, // Limit image size
         { quality: 'auto' },
       ] : undefined,
+      // For videos, add timeout and chunk size
+      timeout: resourceType === 'video' && type === 'video' ? 120000 : undefined, // 2 minutes for video
     };
 
     const result = await cloudinary.uploader.upload(dataURI, uploadOptions);
