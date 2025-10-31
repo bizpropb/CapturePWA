@@ -1,5 +1,7 @@
 'use client';
 
+import ShareButton from '@/components/ui/ShareButton';
+
 export default function MomentCard({ moment, onDelete, onEdit }) {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -60,19 +62,29 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-4 flex gap-2">
-          <button
-            onClick={() => onEdit(moment)}
-            className="flex-1 bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-800 transition-colors duration-200"
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => onDelete(moment.id)}
-            className="flex-1 bg-red-900 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors duration-200"
-          >
-            Delete
-          </button>
+        <div className="mt-4 flex flex-col gap-2">
+          {/* Share Button (Full Width) */}
+          <ShareButton
+            moment={moment}
+            onShareSuccess={() => console.log('Shared successfully!')}
+            className="w-full"
+          />
+
+          {/* Edit & Delete Buttons (Side by Side) */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => onEdit(moment)}
+              className="flex-1 bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-800 transition-colors duration-200"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => onDelete(moment.id)}
+              className="flex-1 bg-red-900 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors duration-200"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>
