@@ -33,6 +33,9 @@ export const viewport = {
   themeColor: "#2563eb",
 };
 
+// Force dynamic rendering for all pages (PWA with heavy client-side functionality)
+export const dynamic = 'force-dynamic';
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
