@@ -51,6 +51,9 @@ async function syncPendingMoments() {
 
     console.log(`[Service Worker] Sync complete: ${successful} succeeded, ${failed} failed`);
 
+    // Update badge with remaining pending count
+    await updateBadge(db);
+
     // Notify clients about sync completion
     const clients = await self.clients.matchAll();
     clients.forEach((client) => {
@@ -119,6 +122,36 @@ function openDatabase() {
   });
 }
 
+/**
+ * Update app badge with pending moments count
+ * @param {IDBDatabase} db - Database instance
+ */
+async function updateBadge(db) {
+  try {
+    // Check if Badge API is supported
+    if (!('setAppBadge' in self.navigator) || !('clearAppBadge' in self.navigator)) {
+      console.log('[Service Worker] Badge API not supported');
+      return;
+    }
+
+    // Get pending moments count
+    const tx = db.transaction(['pendingMoments'], 'readonly');
+    const store = tx.objectStore('pendingMoments');
+    const pendingCount = await store.count();
+
+    // Update badge
+    if (pendingCount > 0) {
+      await self.navigator.setAppBadge(pendingCount);
+      console.log(`[Service Worker] Badge updated to ${pendingCount}`);
+    } else {
+      await self.navigator.clearAppBadge();
+      console.log('[Service Worker] Badge cleared');
+    }
+  } catch (error) {
+    console.error('[Service Worker] Failed to update badge:', error);
+  }
+}
+
 self.addEventListener('push', (event) => {
   console.log('[Service Worker] Push received:', event);
 
@@ -154,17 +187,36 @@ self.addEventListener('notificationclick', (event) => {
   const urlToOpen = event.notification.data?.url || '/';
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // Check if there's already a window open
-      for (const client of clientList) {
-        if (client.url === urlToOpen && 'focus' in client) {
-          return client.focus();
+    Promise.all([
+      // Clear badge when notification is clicked
+      clearBadge(),
+      // Open or focus window
+      clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+        // Check if there's already a window open
+        for (const client of clientList) {
+          if (client.url === urlToOpen && 'focus' in client) {
+            return client.focus();
+          }
         }
-      }
-      // If not, open a new window
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
-    })
+        // If not, open a new window
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      })
+    ])
   );
 });
+
+/**
+ * Clear the app badge
+ */
+async function clearBadge() {
+  try {
+    if ('clearAppBadge' in self.navigator) {
+      await self.navigator.clearAppBadge();
+      console.log('[Service Worker] Badge cleared on notification click');
+    }
+  } catch (error) {
+    console.error('[Service Worker] Failed to clear badge:', error);
+  }
+}

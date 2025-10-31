@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { fetchMoments as fetchMomentsAPI } from '@/lib/api';
 import { syncPendingMoments } from '@/lib/db';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
+import { useAutoBadge } from '@/hooks/useBadge';
 import { MainLayout, PageHeader, StatusIndicator } from '@/components/layout';
 import SyncIndicator from '@/components/layout/SyncIndicator';
 import MomentForm from '@/components/capture/MomentForm';
@@ -17,6 +18,10 @@ export default function Home() {
   const [editingMoment, setEditingMoment] = useState(null);
   const [syncing, setSyncing] = useState(false);
   const isOnline = useOnlineStatus();
+
+  // Automatically manage app badge based on pending moments count
+  // Badge updates when syncing state changes, and clears when app is opened
+  useAutoBadge([syncing]);
 
   // Fetch moments on mount
   useEffect(() => {

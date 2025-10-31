@@ -1,21 +1,34 @@
 'use client';
 
+import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { MainLayout, PageHeader } from '@/components/layout';
 import { InstallButton } from '@/components/layout/InstallPrompt';
 import Card from '@/components/ui/Card';
+
+// Loading skeleton component
+const LoadingSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+    <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+  </div>
+);
 
 // Load PushNotificationManager only on client-side to avoid hydration issues
 const PushNotificationManager = dynamic(
   () => import('@/components/layout/PushNotificationManager'),
   {
     ssr: false,
-    loading: () => (
-      <div className="animate-pulse">
-        <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-        <div className="h-4 bg-gray-700 rounded w-1/2"></div>
-      </div>
-    )
+    loading: LoadingSkeleton
+  }
+);
+
+// Load BadgeManager only on client-side to avoid hydration issues
+const BadgeManager = dynamic(
+  () => import('@/components/layout/BadgeManager').then(mod => ({ default: mod.default })),
+  {
+    ssr: false,
+    loading: LoadingSkeleton
   }
 );
 
@@ -47,15 +60,9 @@ export default function SettingsPage() {
               <InstallButton />
             </div>
 
-            {/* Badge API (placeholder) */}
+            {/* Badge API */}
             <div className="pt-6 border-t border-gray-700">
-              <h3 className="text-lg font-semibold mb-2">App Badge</h3>
-              <p className="text-sm text-gray-400 mb-3">
-                Show notification counts on app icon.
-              </p>
-              <div className="text-sm text-gray-500">
-                Coming in Phase 1.4
-              </div>
+              <BadgeManager />
             </div>
           </div>
         </Card>

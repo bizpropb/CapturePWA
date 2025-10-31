@@ -79,7 +79,7 @@ npx prisma db push # Set up database
 ---
 
 ## Production Build
->Do not use DevMode, since it will disable PWA features, unless absolutely necessary!
+>Do not use DevMode unless the build fails, since it will disable PWA features!
 
 ```bash
 npm run build # Build production version
@@ -97,7 +97,7 @@ npm start # Start production server
 ---
 
 ## Development Build
->Again, do not use DevMode, since it will disable PWA features, unless absolutely necessary! Use Production Build instead!
+>Again, do not use DevMode unless the build fails, since it will disable PWA features!
 
 ```bash
 npm run dev # Start development server (for coding only)

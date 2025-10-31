@@ -19,8 +19,20 @@ class MomentDatabase extends Dexie {
   }
 }
 
-// Create database instance
-export const db = new MomentDatabase();
+// Lazy database instance (only create in browser)
+let dbInstance = null;
+
+function getDB() {
+  // Only create database instance in browser environment
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  if (!dbInstance) {
+    dbInstance = new MomentDatabase();
+  }
+  return dbInstance;
+}
 
 /**
  * Save a moment to IndexedDB cache
@@ -28,6 +40,8 @@ export const db = new MomentDatabase();
  */
 export async function saveMomentToCache(moment) {
   try {
+    const db = getDB();
+    if (!db) return;
     await db.moments.put({ ...moment, synced: true });
   } catch (error) {
     console.error('Failed to cache moment:', error);
@@ -40,6 +54,8 @@ export async function saveMomentToCache(moment) {
  */
 export async function getMomentsFromCache() {
   try {
+    const db = getDB();
+    if (!db) return [];
     const moments = await db.moments.orderBy('createdAt').reverse().toArray();
     return moments;
   } catch (error) {
@@ -55,6 +71,8 @@ export async function getMomentsFromCache() {
  */
 export async function savePendingMoment(momentData) {
   try {
+    const db = getDB();
+    if (!db) throw new Error('Database not available');
     const localId = await db.pendingMoments.add({
       ...momentData,
       createdAt: new Date().toISOString(),
@@ -73,6 +91,8 @@ export async function savePendingMoment(momentData) {
  */
 export async function getPendingMoments() {
   try {
+    const db = getDB();
+    if (!db) return [];
     return await db.pendingMoments.toArray();
   } catch (error) {
     console.error('Failed to get pending moments:', error);
@@ -86,6 +106,8 @@ export async function getPendingMoments() {
  */
 export async function getPendingMomentsCount() {
   try {
+    const db = getDB();
+    if (!db) return 0;
     return await db.pendingMoments.count();
   } catch (error) {
     console.error('Failed to get pending moments count:', error);
@@ -99,6 +121,8 @@ export async function getPendingMomentsCount() {
  */
 export async function deletePendingMoment(localId) {
   try {
+    const db = getDB();
+    if (!db) return;
     await db.pendingMoments.delete(localId);
   } catch (error) {
     console.error('Failed to delete pending moment:', error);
@@ -165,6 +189,8 @@ export async function syncPendingMoments() {
  */
 export async function clearAllCache() {
   try {
+    const db = getDB();
+    if (!db) return;
     await db.moments.clear();
     await db.pendingMoments.clear();
   } catch (error) {
