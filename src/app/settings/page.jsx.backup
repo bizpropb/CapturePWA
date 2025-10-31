@@ -2,6 +2,8 @@
 
 import { MainLayout, PageHeader } from '@/components/layout';
 import { InstallButton } from '@/components/layout/InstallPrompt';
+import PushNotificationManager from '@/components/layout/PushNotificationManager';
+import BadgeManager from '@/components/layout/BadgeManager';
 import Card from '@/components/ui/Card';
 
 export default function SettingsPage() {
@@ -23,26 +25,14 @@ export default function SettingsPage() {
             <InstallButton />
           </Card>
 
-          {/* Push Notifications - Placeholder */}
+          {/* Push Notifications */}
           <Card>
-            <h3 className="text-lg font-semibold mb-2">Push Notifications</h3>
-            <p className="text-sm text-gray-400 mb-3">
-              Receive notifications for new moments and sync status.
-            </p>
-            <p className="text-xs text-yellow-400">
-              Push notification controls available in development mode
-            </p>
+            <PushNotificationManager />
           </Card>
 
-          {/* Badge Notifications - Placeholder */}
+          {/* Badge Notifications */}
           <Card>
-            <h3 className="text-lg font-semibold mb-2">App Badge</h3>
-            <p className="text-sm text-gray-400 mb-3">
-              Show notification counts on the app icon when in background.
-            </p>
-            <p className="text-xs text-yellow-400">
-              Badge controls available in development mode
-            </p>
+            <BadgeManager />
           </Card>
 
           {/* About Section */}

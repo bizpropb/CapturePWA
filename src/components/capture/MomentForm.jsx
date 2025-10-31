@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { uploadImage, uploadAudio, validateFileType, validateFileSize, formatFileSize } from '@/lib/cloudinary';
 import { createMoment } from '@/lib/api';
 import CameraCapture from './CameraCapture';
 import GPSCapture from './GPSCapture';
 import AudioRecorder from './AudioRecorder';
 
-export default function MomentForm({ onMomentCreated }) {
+export default function MomentForm({ onMomentCreated, sharedData }) {
   const [description, setDescription] = useState('');
   const [imageData, setImageData] = useState(null); // Blob from camera or file
   const [audioData, setAudioData] = useState(null); // Blob from recorder or file
@@ -17,6 +17,50 @@ export default function MomentForm({ onMomentCreated }) {
   const [uploadProgress, setUploadProgress] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Handle shared data from Share Target API
+  useEffect(() => {
+    if (!sharedData) return;
+
+    // Build description from shared data
+    let desc = '';
+    if (sharedData.title) desc += sharedData.title;
+    if (sharedData.text) {
+      if (desc) desc += '\n';
+      desc += sharedData.text;
+    }
+    if (sharedData.url) {
+      if (desc) desc += '\n';
+      desc += sharedData.url;
+    }
+
+    if (desc) {
+      setDescription(desc);
+    }
+
+    // Handle shared media (image or audio)
+    if (sharedData.media && sharedData.media.dataUrl) {
+      const { dataUrl, type, originalName } = sharedData.media;
+
+      // Convert data URL to Blob
+      fetch(dataUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          // Add filename to blob for better UX
+          const file = new File([blob], originalName, { type });
+
+          if (type.startsWith('image/')) {
+            setImageData(file);
+          } else if (type.startsWith('audio/')) {
+            setAudioData(file);
+          }
+        })
+        .catch(err => {
+          console.error('Error processing shared media:', err);
+          setError('Failed to load shared media');
+        });
+    }
+  }, [sharedData]);
 
   const handleCameraCapture = (blob) => {
     setImageData(blob);

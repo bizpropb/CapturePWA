@@ -1,7 +1,7 @@
 'use client';
 
 import Navigation from './Navigation';
-import InstallPrompt from './InstallPrompt';
+// import InstallPrompt from './InstallPrompt';
 
 /**
  * Main Layout Wrapper
@@ -19,8 +19,8 @@ export default function MainLayout({ children }) {
         {children}
       </main>
 
-      {/* Install Prompt (floating banner) */}
-      <InstallPrompt />
+      {/* Install Prompt (floating banner) - Temporarily disabled for build */}
+      {/* <InstallPrompt /> */}
     </>
   );
 }

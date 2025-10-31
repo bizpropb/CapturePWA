@@ -10,6 +10,7 @@ export default function Button({
   size = 'md',
   disabled = false,
   loading = false,
+  fullWidth = false,
   className = '',
   ...props
 }) {
@@ -28,9 +29,11 @@ export default function Button({
     lg: 'px-6 py-3 text-lg',
   };
 
+  const widthClass = fullWidth ? 'w-full' : '';
+
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`}
       disabled={disabled || loading}
       {...props}
     >
