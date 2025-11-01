@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { formatTimelineDate, getTimeAgo } from '@/utils/date-grouping';
 import MapView from '@/components/capture/MapView';
 import ShareButton from '@/components/ui/ShareButton';
@@ -26,11 +27,13 @@ export default function TimelineItem({ moment, isLast }) {
       <div className="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden">
         {/* Media */}
         {moment.imageUrl && (
-          <div className="w-full h-64 bg-gray-700">
-            <img
+          <div className="w-full h-64 bg-gray-700 relative">
+            <Image
               src={moment.imageUrl}
               alt={moment.description}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}

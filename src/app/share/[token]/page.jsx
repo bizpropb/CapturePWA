@@ -130,11 +130,15 @@ export default async function SharePage({ params }) {
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Image */}
         {moment.imageUrl && (
-          <div className="mb-6 rounded-2xl overflow-hidden bg-gray-800">
-            <img
+          <div className="mb-6 rounded-2xl overflow-hidden bg-gray-800 relative" style={{ minHeight: '400px' }}>
+            <Image
               src={moment.imageUrl}
               alt={moment.description}
+              width={800}
+              height={600}
               className="w-full h-auto max-h-[600px] object-contain"
+              sizes="(max-width: 768px) 100vw, 800px"
+              priority
             />
           </div>
         )}
@@ -241,7 +245,7 @@ export default async function SharePage({ params }) {
                 ) : (
                   <p className="text-gray-400 text-sm">
                     {moment.gpsLat.toFixed(6)}, {moment.gpsLng.toFixed(6)}
-                    {moment.gpsAccuracy && ` (±${Math.round(moment.gpsAccuracy)}m)`}
+                    {moment.gpsAccuracy && ` (ï¿½${Math.round(moment.gpsAccuracy)}m)`}
                   </p>
                 )}
               </div>

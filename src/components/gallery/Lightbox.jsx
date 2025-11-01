@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useFileSystem } from '@/hooks/useFileSystem';
 import Button from '@/components/ui/Button';
 
@@ -141,16 +142,18 @@ export default function Lightbox({ items, initialIndex = 0, onClose }) {
       <div className="relative max-w-7xl max-h-[90vh] w-full mx-4">
         {currentItem.type === 'image' ? (
           <div
-            className={`relative ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+            className={`relative ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'} w-full h-[90vh]`}
             onClick={toggleZoom}
           >
-            <img
+            <Image
               src={currentItem.url}
               alt={currentItem.description}
-              className={`w-full h-auto max-h-[90vh] object-contain transition-transform duration-300 ${
+              fill
+              className={`object-contain transition-transform duration-300 ${
                 isZoomed ? 'scale-150' : 'scale-100'
               }`}
               style={isZoomed ? { transformOrigin: 'center center' } : {}}
+              sizes="100vw"
             />
           </div>
         ) : currentItem.type === 'video' ? (
@@ -239,11 +242,15 @@ export default function Lightbox({ items, initialIndex = 0, onClose }) {
                 }`}
               >
                 {item.type === 'image' ? (
-                  <img
-                    src={item.url}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={item.url}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="64px"
+                    />
+                  </div>
                 ) : (
                   <div className="w-full h-full bg-gray-700 flex items-center justify-center">
                     <span className="text-2xl">▶️</span>

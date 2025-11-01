@@ -1,0 +1,14 @@
+# robots.txt for CapturePWA
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Allow specific paths
+Allow: /share/
+
+# Disallow API routes from indexing
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://capturepwa.vercel.app/sitemap.xml

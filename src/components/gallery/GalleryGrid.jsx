@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Skeleton from '@/components/ui/Skeleton';
 
 /**
@@ -77,12 +78,14 @@ function GalleryItem({ moment, onClick }) {
     >
       {/* Media Preview */}
       {hasImage && (
-        <div className="relative aspect-auto">
-          <img
+        <div className="relative w-full" style={{ aspectRatio: 'auto' }}>
+          <Image
             src={moment.imageUrl}
             alt={moment.description}
+            width={400}
+            height={300}
             className="w-full h-auto object-cover"
-            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
           />
           {/* Overlay on hover */}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center">

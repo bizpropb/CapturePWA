@@ -73,7 +73,7 @@ export default function DataManagement() {
     event.target.value = '';
   };
 
-  // Handle import (merge with existing data)
+  // Handle import (merge with existing data) - ONE BY ONE
   const handleImportMerge = async () => {
     if (!importedData) return;
 
@@ -95,7 +95,7 @@ export default function DataManagement() {
         }
       }
 
-      alert(`Import complete!\nSuccess: ${successCount}\nFailed: ${errorCount}`);
+      alert(`Import complete (sequential)!\nSuccess: ${successCount}\nFailed: ${errorCount}`);
 
       // Clear preview
       setImportPreview(null);
@@ -103,6 +103,45 @@ export default function DataManagement() {
     } catch (error) {
       console.error('Import failed:', error);
       alert(`Import failed: ${error.message}`);
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  // Handle import using Prisma Transaction (all-or-nothing)
+  // ✨ DEMONSTRATES: Prisma $transaction() - atomic bulk operations
+  const handleImportTransaction = async () => {
+    if (!importedData) return;
+
+    setImporting(true);
+    try {
+      // Prepare moments data (remove metadata fields)
+      const momentsToImport = importedData.moments.map(moment => {
+        const { id, createdAt, updatedAt, exportedAt, tags, category, ...momentData } = moment;
+        return momentData;
+      });
+
+      // Call bulk import API that uses Prisma transaction
+      const response = await fetch('/api/moments/bulk-import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moments: momentsToImport }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert(`✅ Bulk import successful!\n\n${result.count} moments imported atomically using Prisma transaction.\n\nAll moments imported or none (atomic operation).`);
+      } else {
+        throw new Error(result.message || 'Bulk import failed');
+      }
+
+      // Clear preview
+      setImportPreview(null);
+      clearImportedData();
+    } catch (error) {
+      console.error('Bulk import failed:', error);
+      alert(`❌ Transaction failed!\n\n${error.message}\n\nNo moments were imported (transaction rolled back).`);
     } finally {
       setImporting(false);
     }
@@ -192,18 +231,36 @@ export default function DataManagement() {
               )}
             </div>
 
-            <div className="flex gap-2">
+            <div className="space-y-2">
+              {/* Transaction Import (Recommended) */}
+              <button
+                onClick={handleImportTransaction}
+                disabled={importing}
+                className="w-full bg-blue-900 text-white py-3 px-4 rounded-lg hover:bg-blue-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-blue-600"
+              >
+                {importing ? '⏳ Importing...' : '✨ Bulk Import (Prisma Transaction)'}
+              </button>
+              <p className="text-xs text-blue-300 px-2">
+                ⚡ Recommended: Atomic operation - all moments import or none (uses Prisma $transaction)
+              </p>
+
+              {/* Sequential Import (Legacy) */}
               <button
                 onClick={handleImportMerge}
                 disabled={importing}
-                className="flex-1 bg-green-900 text-white py-2 px-4 rounded hover:bg-green-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-green-900 text-white py-2 px-4 rounded hover:bg-green-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {importing ? '⏳ Importing...' : '✓ Import Moments'}
+                {importing ? '⏳ Importing...' : '📝 Sequential Import'}
               </button>
+              <p className="text-xs text-gray-400 px-2">
+                Imports one-by-one (partial imports possible if errors occur)
+              </p>
+
+              {/* Cancel */}
               <button
                 onClick={handleCancelImport}
                 disabled={importing}
-                className="flex-1 bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
               >
                 Cancel
               </button>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import ShareButton from '@/components/ui/ShareButton';
 import MapView from '@/components/capture/MapView';
 import { useClipboard } from '@/hooks/useClipboard';
@@ -54,12 +55,13 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
     <div className="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden">
       {/* Image */}
       {moment.imageUrl && (
-        <div className="w-full h-48 bg-gray-700">
-          <img
+        <div className="w-full h-48 bg-gray-700 relative cursor-pointer" onClick={() => window.open(moment.imageUrl, '_blank')}>
+          <Image
             src={moment.imageUrl}
             alt="Moment"
-            className="w-full h-full object-cover cursor-pointer"
-            onClick={() => window.open(moment.imageUrl, '_blank')}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
       )}
