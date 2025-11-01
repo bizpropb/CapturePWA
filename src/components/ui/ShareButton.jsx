@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * ShareButton Component - Web Share API Implementation
@@ -17,11 +17,15 @@ export default function ShareButton({ moment, onShareSuccess, className = '' }) 
   const [isSharing, setIsSharing] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
   const [shareToken, setShareToken] = useState(moment.shareToken);
+  const [canShare, setCanShare] = useState(false);
 
   /**
-   * Check if Web Share API is supported
+   * Check if Web Share API is supported (only on client)
+   * This prevents hydration mismatches
    */
-  const canShare = typeof navigator !== 'undefined' && navigator.share;
+  useEffect(() => {
+    setCanShare(typeof navigator !== 'undefined' && !!navigator.share);
+  }, []);
 
   /**
    * Generate share token if one doesn't exist
