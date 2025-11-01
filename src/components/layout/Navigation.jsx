@@ -1,15 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 /**
  * Navigation Component
  * Mobile: Bottom navigation bar
- * Desktop: Sidebar navigation
+ * Desktop: Sidebar navigation with collapsible feature
  */
 
-export default function Navigation() {
+export default function Navigation({ isCollapsed, setIsCollapsed }) {
   const pathname = usePathname();
 
   const navItems = [
@@ -80,8 +81,8 @@ export default function Navigation() {
   return (
     <>
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-40">
-        <div className="flex justify-around items-center h-16">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-40 overflow-x-hidden" data-nav-collapsed={isCollapsed}>
+        <div className="flex justify-around items-center h-16 overflow-x-hidden">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -100,35 +101,98 @@ export default function Navigation() {
       </nav>
 
       {/* Desktop Sidebar Navigation */}
-      <nav className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-gray-800 border-r border-gray-700 flex-col z-40">
-        {/* Logo/Brand */}
-        <div className="p-6 border-b border-gray-700">
-          <h1 className="text-2xl font-bold text-white">CapturePWA</h1>
-          <p className="text-sm text-gray-400 mt-1">Save Your Moments</p>
+      <nav
+        className={`hidden md:flex fixed left-0 top-0 bottom-0 bg-gray-800 border-r border-gray-700 flex-col z-40 transition-all duration-300 overflow-x-hidden ${
+          isCollapsed ? 'w-20' : 'w-64'
+        }`}
+      >
+        {/* Logo/Brand & Toggle Button */}
+        <div className={`p-6 border-b border-gray-700 flex items-center overflow-x-hidden ${
+          isCollapsed ? 'justify-center' : 'justify-between'
+        }`}>
+          <div className={`transition-opacity duration-300 overflow-hidden ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
+            <h1 className="text-2xl font-bold text-white whitespace-nowrap">CapturePWA</h1>
+            <p className="text-sm text-gray-400 mt-1 whitespace-nowrap">Save Your Moments</p>
+          </div>
+
+          {/* Hamburger Toggle Button */}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200"
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <svg
+              className="w-6 h-6 text-gray-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {isCollapsed ? (
+                // Menu icon (expand)
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              ) : (
+                // Left arrow icon (collapse)
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              )}
+            </svg>
+          </button>
         </div>
 
         {/* Navigation Links */}
-        <div className="flex-1 overflow-y-auto py-4">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden py-4">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center px-6 py-3 transition-colors duration-200 ${
+              className={`flex items-center overflow-x-hidden ${isCollapsed ? 'justify-center px-6' : 'px-6'} py-3 transition-all duration-200 group relative ${
                 isActive(item.href)
                   ? 'bg-blue-600 text-white border-r-4 border-blue-400'
                   : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}
+              title={isCollapsed ? item.name : ''}
             >
-              <span className="mr-3">{item.icon}</span>
-              <span className="font-medium">{item.name}</span>
+              <span className={isCollapsed ? '' : 'mr-3'}>{item.icon}</span>
+              <span
+                className={`font-medium transition-all duration-300 ${
+                  isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+                }`}
+              >
+                {item.name}
+              </span>
+
+              {/* Tooltip for collapsed state */}
+              {isCollapsed && (
+                <span className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                  {item.name}
+                </span>
+              )}
             </Link>
           ))}
         </div>
 
         {/* Footer Info */}
-        <div className="p-6 border-t border-gray-700 text-sm text-gray-400">
-          <p>PWA Showcase</p>
-          <p className="mt-1">v2.0</p>
+        <div className={`p-6 border-t border-gray-700 text-sm text-gray-400 transition-all duration-300 overflow-x-hidden ${
+          isCollapsed ? 'text-center' : ''
+        }`}>
+          {isCollapsed ? (
+            <p className="text-xs">v2.0</p>
+          ) : (
+            <>
+              <p>PWA Showcase</p>
+              <p className="mt-1">v2.0</p>
+            </>
+          )}
         </div>
       </nav>
     </>

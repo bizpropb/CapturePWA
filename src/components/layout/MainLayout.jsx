@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Navigation from './Navigation';
 // import InstallPrompt from './InstallPrompt';
 
@@ -10,12 +11,30 @@ import Navigation from './Navigation';
  */
 
 export default function MainLayout({ children }) {
+  const [isNavCollapsed, setIsNavCollapsed] = useState(false);
+
+  // Load collapsed state from localStorage on mount
+  useEffect(() => {
+    const savedState = localStorage.getItem('navCollapsed');
+    if (savedState !== null) {
+      setIsNavCollapsed(savedState === 'true');
+    }
+  }, []);
+
+  // Save collapsed state to localStorage when it changes
+  const handleSetCollapsed = (collapsed) => {
+    setIsNavCollapsed(collapsed);
+    localStorage.setItem('navCollapsed', collapsed.toString());
+  };
+
   return (
     <>
-      <Navigation />
+      <Navigation isCollapsed={isNavCollapsed} setIsCollapsed={handleSetCollapsed} />
 
       {/* Main Content Area */}
-      <main className="min-h-screen md:ml-64 pb-16 md:pb-0">
+      <main className={`min-h-screen pb-16 md:pb-0 transition-all duration-300 ${
+        isNavCollapsed ? 'md:ml-20' : 'md:ml-64'
+      }`}>
         {children}
       </main>
 
