@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import ShareButton from '@/components/ui/ShareButton';
 import MapView from '@/components/capture/MapView';
+import { useClipboard } from '@/hooks/useClipboard';
 
 export default function MomentCard({ moment, onDelete, onEdit }) {
   const [showMap, setShowMap] = useState(false);
+  const { copyText, copied, loading: copying } = useClipboard();
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -18,6 +21,22 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
   };
 
   const hasLocation = moment.gpsLat !== 0 || moment.gpsLng !== 0;
+
+  // Copy moment text
+  const handleCopyText = () => {
+    const text = `${moment.description}\n\nCreated: ${formatDate(moment.createdAt)}${
+      hasLocation ? `\nLocation: ${moment.gpsLat.toFixed(6)}, ${moment.gpsLng.toFixed(6)}` : ''
+    }${moment.mood ? `\nMood: ${moment.mood}` : ''}${
+      moment.weather ? `\nWeather: ${moment.weather}` : ''
+    }`;
+    copyText(text);
+  };
+
+  // Copy share link
+  const handleCopyLink = () => {
+    const url = `${window.location.origin}/moments/${moment.id}`;
+    copyText(url);
+  };
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden">
@@ -141,6 +160,46 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
             onShareSuccess={() => console.log('Shared successfully!')}
             className="w-full"
           />
+
+          {/* Copy Buttons (Side by Side) */}
+          <div className="flex gap-2">
+            <button
+              onClick={handleCopyText}
+              disabled={copying}
+              className="flex-1 bg-green-900 text-white py-2 px-4 rounded hover:bg-green-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              title="Copy moment text to clipboard"
+            >
+              {copied ? (
+                <>
+                  <span>✓</span>
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <span>📋</span>
+                  <span>Copy Text</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={handleCopyLink}
+              disabled={copying}
+              className="flex-1 bg-purple-900 text-white py-2 px-4 rounded hover:bg-purple-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              title="Copy shareable link to clipboard"
+            >
+              {copied ? (
+                <>
+                  <span>✓</span>
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <span>🔗</span>
+                  <span>Copy Link</span>
+                </>
+              )}
+            </button>
+          </div>
 
           {/* Edit & Delete Buttons (Side by Side) */}
           <div className="flex gap-2">

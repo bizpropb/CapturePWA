@@ -6,6 +6,7 @@ import { createMoment } from '@/lib/api';
 import CameraCapture from './CameraCapture';
 import GPSCapture from './GPSCapture';
 import AudioRecorder from './AudioRecorder';
+import { usePasteListener } from '@/hooks/useClipboard';
 
 export default function MomentForm({ onMomentCreated, sharedData }) {
   const [description, setDescription] = useState('');
@@ -17,6 +18,23 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
   const [uploadProgress, setUploadProgress] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [pasteMessage, setPasteMessage] = useState('');
+
+  // Handle paste events (text or images)
+  usePasteListener((pasteData) => {
+    if (pasteData.type === 'text') {
+      // Append pasted text to description
+      setDescription(prev => prev ? `${prev}\n${pasteData.data}` : pasteData.data);
+      setPasteMessage('Text pasted!');
+      setTimeout(() => setPasteMessage(''), 2000);
+    } else if (pasteData.type === 'image' && !imageData) {
+      // Set pasted image if no image is already captured
+      const file = new File([pasteData.blob], 'pasted-image.png', { type: pasteData.blob.type });
+      setImageData(file);
+      setPasteMessage('Image pasted!');
+      setTimeout(() => setPasteMessage(''), 2000);
+    }
+  });
 
   // Handle shared data from Share Target API
   useEffect(() => {
@@ -186,19 +204,31 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-white">Create a Moment</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold text-white">Create a Moment</h2>
+        {pasteMessage && (
+          <div className="text-sm text-green-400 animate-fade-in">
+            ✓ {pasteMessage}
+          </div>
+        )}
+      </div>
 
       <form onSubmit={handleSubmit}>
         {/* Description */}
         <div className="mb-6">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
-            Description *
-          </label>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300">
+              Description *
+            </label>
+            <span className="text-xs text-gray-400">
+              💡 Tip: You can paste text or images (Ctrl+V / Cmd+V)
+            </span>
+          </div>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What's on your mind?"
+            placeholder="What's on your mind? (You can also paste text here)"
             rows={4}
             className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
