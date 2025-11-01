@@ -6,6 +6,7 @@ import { useOrientation } from '@/hooks/useOrientation';
 import { useStepCounter } from '@/hooks/useStepCounter';
 import { useAmbientLight } from '@/hooks/useAmbientLight';
 import BatteryStatus from './BatteryStatus';
+import WakeLockDemo from './WakeLockDemo';
 
 export default function SensorDemo() {
   const [shakeCount, setShakeCount] = useState(0);
@@ -253,6 +254,9 @@ export default function SensorDemo() {
 
       {/* Battery Status */}
       <BatteryStatus />
+
+      {/* Wake Lock */}
+      <WakeLockDemo />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { checkCameraSupport, requestCamera, stopMediaStream } from '@/lib/hardware-utils';
+import { useAutoWakeLock } from '@/hooks/useWakeLock';
 import jsQR from 'jsqr';
 
 /**
@@ -46,6 +47,9 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
   const canvasRef = useRef(null);
   const qrScanIntervalRef = useRef(null);
   const recordingTimerRef = useRef(null);
+
+  // Keep screen on during video recording
+  const wakeLock = useAutoWakeLock(isRecording);
 
   // Check camera support after component mounts
   useEffect(() => {

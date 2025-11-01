@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { checkAudioSupport, requestMicrophone, stopMediaStream } from '@/lib/hardware-utils';
+import { useAutoWakeLock } from '@/hooks/useWakeLock';
 
 /**
  * Enhanced Audio Recorder Component
@@ -47,6 +48,9 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
   const animationFrameRef = useRef(null);
   const audioElementRef = useRef(null);
   const recognitionRef = useRef(null);
+
+  // Keep screen on during audio playback
+  const wakeLock = useAutoWakeLock(isPlaying);
 
   // Check support after component mounts
   useEffect(() => {
