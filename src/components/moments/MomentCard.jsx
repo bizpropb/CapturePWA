@@ -4,10 +4,12 @@ import { useState } from 'react';
 import ShareButton from '@/components/ui/ShareButton';
 import MapView from '@/components/capture/MapView';
 import { useClipboard } from '@/hooks/useClipboard';
+import { useFileSystem } from '@/hooks/useFileSystem';
 
 export default function MomentCard({ moment, onDelete, onEdit }) {
   const [showMap, setShowMap] = useState(false);
   const { copyText, copied, loading: copying } = useClipboard();
+  const { downloadImage, loading: downloading, success: downloaded } = useFileSystem();
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -36,6 +38,16 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
   const handleCopyLink = () => {
     const url = `${window.location.origin}/moments/${moment.id}`;
     copyText(url);
+  };
+
+  // Download image
+  const handleDownloadImage = async () => {
+    if (!moment.imageUrl) return;
+
+    const filename = `moment-${moment.id}-${new Date(moment.createdAt).toISOString().split('T')[0]}.jpg`;
+    await downloadImage(moment.imageUrl, filename, {
+      preferPicker: false // Use direct download for better UX
+    });
   };
 
   return (
@@ -200,6 +212,33 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
               )}
             </button>
           </div>
+
+          {/* Download Image Button (if image exists) */}
+          {moment.imageUrl && (
+            <button
+              onClick={handleDownloadImage}
+              disabled={downloading}
+              className="w-full bg-indigo-900 text-white py-2 px-4 rounded hover:bg-indigo-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              title="Download image to device"
+            >
+              {downloaded ? (
+                <>
+                  <span>✓</span>
+                  <span>Downloaded!</span>
+                </>
+              ) : downloading ? (
+                <>
+                  <span>⏳</span>
+                  <span>Downloading...</span>
+                </>
+              ) : (
+                <>
+                  <span>💾</span>
+                  <span>Download Image</span>
+                </>
+              )}
+            </button>
+          )}
 
           {/* Edit & Delete Buttons (Side by Side) */}
           <div className="flex gap-2">

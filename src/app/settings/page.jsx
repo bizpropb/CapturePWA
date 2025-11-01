@@ -5,6 +5,7 @@ import { InstallButton } from '@/components/layout/InstallPrompt';
 import Card from '@/components/ui/Card';
 import SensorDemo from '@/components/sensors/SensorDemo';
 import ClipboardDemo from '@/components/ui/ClipboardDemo';
+import DataManagement from '@/components/ui/DataManagement';
 
 export default function SettingsPage() {
   return (
@@ -58,6 +59,14 @@ export default function SettingsPage() {
             <h2 className="text-2xl font-bold mb-4 px-1">Clipboard API</h2>
             <Card>
               <ClipboardDemo />
+            </Card>
+          </div>
+
+          {/* Data Management */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4 px-1">Data Management</h2>
+            <Card>
+              <DataManagement />
             </Card>
           </div>
 
