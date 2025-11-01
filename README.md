@@ -143,17 +143,53 @@ Next.js displays two URLs:
 
 ---
 
-## Debugging
+## Database Management
 
-### View Database
+### Prisma Studio - Visual Database Editor
+
+**What is Prisma Studio?**
+Prisma Studio is a visual database editor that opens in your browser. It lets you view, edit, and manage your database without writing SQL.
+
+**Launch Prisma Studio:**
 ```bash
-npx prisma studio # Open Prisma Studio
+npm run db:studio
+# or
+npx prisma studio
 ```
 
-### Clear Database
+**Access:** Opens automatically at http://localhost:5555
+
+**What you can do:**
+- 📊 **View all data** - Browse moments, tags, categories, users
+- ✏️ **Edit records** - Click any cell to edit data
+- ➕ **Add records** - Create new moments, tags, or categories
+- 🗑️ **Delete records** - Remove data with confirmation
+- 🔍 **Search & filter** - Find specific records quickly
+- 🔗 **View relations** - See connections between moments and tags
+
+**Use cases:**
+- Debug issues by inspecting database state
+- Manually add test data
+- Clean up invalid records
+- Export data for analysis
+- Verify sync operations worked correctly
+
+### Other Database Commands
+
+**Clear database:**
 ```bash
-rm prisma/dev.db # Remove database
+rm prisma/dev.db # Remove database file
 npx prisma db push # Recreate schema
+```
+
+**Seed sample data:**
+```bash
+npm run db:seed
+```
+
+**Generate Prisma Client:**
+```bash
+npm run db:generate
 ```
 
 ---
