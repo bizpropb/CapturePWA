@@ -197,3 +197,17 @@ export async function clearAllCache() {
     console.error('Failed to clear cache:', error);
   }
 }
+
+/**
+ * Export db instance for direct access
+ */
+export const db = {
+  get moments() {
+    const instance = getDB();
+    return instance ? instance.moments : { toArray: async () => [], clear: async () => {} };
+  },
+  get pendingMoments() {
+    const instance = getDB();
+    return instance ? instance.pendingMoments : { toArray: async () => [], clear: async () => {} };
+  }
+};
