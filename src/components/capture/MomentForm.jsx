@@ -6,6 +6,10 @@ import { createMoment } from '@/lib/api';
 import CameraCapture from './CameraCapture';
 import GPSCapture from './GPSCapture';
 import AudioRecorder from './AudioRecorder';
+import MoodSelector from './MoodSelector';
+import CategorySelector from './CategorySelector';
+import TagSelector from './TagSelector';
+import WeatherFetcher from './WeatherFetcher';
 import { usePasteListener } from '@/hooks/useClipboard';
 
 export default function MomentForm({ onMomentCreated, sharedData }) {
@@ -14,6 +18,10 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
   const [audioData, setAudioData] = useState(null); // Blob from recorder or file
   const [gpsLat, setGpsLat] = useState(0);
   const [gpsLng, setGpsLng] = useState(0);
+  const [mood, setMood] = useState(null);
+  const [weather, setWeather] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
+  const [tagIds, setTagIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
   const [error, setError] = useState('');
@@ -176,6 +184,10 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
         gpsLng,
         imageUrl,
         audioUrl,
+        mood,
+        weather,
+        categoryId,
+        tagIds: tagIds.length > 0 ? tagIds : undefined,
       });
 
       // Clear form
@@ -184,6 +196,10 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
       setAudioData(null);
       setGpsLat(0);
       setGpsLng(0);
+      setMood(null);
+      setWeather(null);
+      setCategoryId(null);
+      setTagIds([]);
       setSuccess(true);
       setUploadProgress('');
 
@@ -336,6 +352,44 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
           </label>
           <GPSCapture
             onCapture={handleGPSCapture}
+          />
+        </div>
+
+        {/* Mood Selector */}
+        <div className="mb-6">
+          <MoodSelector
+            value={mood}
+            onChange={setMood}
+            disabled={loading}
+          />
+        </div>
+
+        {/* Weather Fetcher */}
+        <div className="mb-6">
+          <WeatherFetcher
+            gpsLat={gpsLat}
+            gpsLng={gpsLng}
+            value={weather}
+            onChange={setWeather}
+            disabled={loading}
+          />
+        </div>
+
+        {/* Category Selector */}
+        <div className="mb-6">
+          <CategorySelector
+            value={categoryId}
+            onChange={setCategoryId}
+            disabled={loading}
+          />
+        </div>
+
+        {/* Tag Selector */}
+        <div className="mb-6">
+          <TagSelector
+            value={tagIds}
+            onChange={setTagIds}
+            disabled={loading}
           />
         </div>
 

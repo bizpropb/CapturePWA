@@ -26,7 +26,10 @@ export async function GET() {
 /**
  * POST /api/moments
  * Create a new moment
- * Body: { description, gpsLat?, gpsLng?, imageUrl?, audioUrl? }
+ * Body: {
+ *   description, gpsLat?, gpsLng?, imageUrl?, audioUrl?,
+ *   mood?, weather?, categoryId?, tagIds?
+ * }
  */
 export async function POST(request) {
   try {
@@ -40,15 +43,41 @@ export async function POST(request) {
       );
     }
 
-    // Create moment with provided data
+    // Prepare moment data
+    const momentData = {
+      description: body.description.trim(),
+      gpsLat: body.gpsLat ?? 0.0,
+      gpsLng: body.gpsLng ?? 0.0,
+      imageUrl: body.imageUrl || null,
+      audioUrl: body.audioUrl || null,
+      mood: body.mood || null,
+      weather: body.weather || null,
+      categoryId: body.categoryId || null,
+    };
+
+    // Create moment with tags if provided
     const moment = await prisma.moment.create({
       data: {
-        description: body.description.trim(),
-        gpsLat: body.gpsLat ?? 0.0,
-        gpsLng: body.gpsLng ?? 0.0,
-        imageUrl: body.imageUrl || null,
-        audioUrl: body.audioUrl || null,
+        ...momentData,
+        // Connect tags using the junction table
+        tags: body.tagIds && body.tagIds.length > 0
+          ? {
+              create: body.tagIds.map(tagId => ({
+                tag: {
+                  connect: { id: tagId }
+                }
+              }))
+            }
+          : undefined
       },
+      include: {
+        category: true,
+        tags: {
+          include: {
+            tag: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(moment, { status: 201 });
