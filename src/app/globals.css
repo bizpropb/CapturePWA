@@ -99,3 +99,23 @@ body {
 .animate-slideDown {
   animation: slideDown 0.3s ease-out;
 }
+
+/* Page transition animation */
+.page-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Button press effect */
+button, .btn {
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+button:active:not(:disabled), .btn:active:not(:disabled) {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* Smooth hover transitions */
+a, button, .interactive {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}

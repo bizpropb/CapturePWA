@@ -32,7 +32,7 @@ export default function MainLayout({ children }) {
       <Navigation isCollapsed={isNavCollapsed} setIsCollapsed={handleSetCollapsed} />
 
       {/* Main Content Area */}
-      <main className={`min-h-screen pb-16 md:pb-0 transition-all duration-300 ${
+      <main className={`min-h-screen pb-16 md:pb-0 transition-all duration-300 page-enter ${
         isNavCollapsed ? 'md:ml-20' : 'md:ml-64'
       }`}>
         {children}

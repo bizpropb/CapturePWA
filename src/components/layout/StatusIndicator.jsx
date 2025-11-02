@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
 /**
@@ -9,6 +11,31 @@ import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
 export default function StatusIndicator({ syncing = false }) {
   const isOnline = useOnlineStatus();
+  const previousOnlineStatus = useRef(isOnline);
+
+  // Show toast when online status changes
+  useEffect(() => {
+    // Skip on first render
+    if (previousOnlineStatus.current === null) {
+      previousOnlineStatus.current = isOnline;
+      return;
+    }
+
+    // Detect change
+    if (previousOnlineStatus.current !== isOnline) {
+      if (isOnline) {
+        toast.success('🟢 Back online! Syncing pending moments...', {
+          duration: 3000,
+        });
+      } else {
+        toast('🔴 You are offline. Moments will be saved locally.', {
+          duration: 4000,
+          icon: '⚠️',
+        });
+      }
+      previousOnlineStatus.current = isOnline;
+    }
+  }, [isOnline]);
 
   return (
     <div className="flex items-center gap-2">

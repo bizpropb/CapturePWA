@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { getSyncManager } from '@/lib/sync-manager';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
@@ -29,6 +30,18 @@ export default function SyncIndicator() {
       console.log('[SyncIndicator] Sync completed:', data);
       setSyncing(false);
       updateStatus(manager);
+
+      // Show toast notification
+      if (data.successful > 0) {
+        toast.success(`✅ ${data.successful} moment${data.successful !== 1 ? 's' : ''} synced!`, {
+          duration: 3000,
+        });
+      }
+      if (data.failed > 0) {
+        toast.error(`⚠️ ${data.failed} moment${data.failed !== 1 ? 's' : ''} failed to sync`, {
+          duration: 4000,
+        });
+      }
     });
 
     // Poll for status updates every 5 seconds

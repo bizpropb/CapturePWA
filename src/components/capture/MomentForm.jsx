@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { uploadImage, uploadAudio, validateFileType, validateFileSize, formatFileSize } from '@/lib/cloudinary';
 import { createMoment } from '@/lib/api';
 import CameraCapture from './CameraCapture';
@@ -203,6 +204,17 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
       setSuccess(true);
       setUploadProgress('');
 
+      // Show success toast
+      if (newMoment.pending) {
+        toast.success('Moment saved offline! Will sync when online.', {
+          duration: 4000,
+        });
+      } else {
+        toast.success('Moment created successfully!', {
+          duration: 3000,
+        });
+      }
+
       // Notify parent component
       if (onMomentCreated) {
         onMomentCreated(newMoment);
@@ -213,6 +225,9 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
     } catch (err) {
       setError(err.message);
       setUploadProgress('');
+      toast.error(`Failed to create moment: ${err.message}`, {
+        duration: 4000,
+      });
     } finally {
       setLoading(false);
     }
