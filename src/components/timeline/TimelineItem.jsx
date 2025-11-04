@@ -5,12 +5,13 @@ import Image from 'next/image';
 import { formatTimelineDate, getTimeAgo } from '@/utils/date-grouping';
 import MapView from '@/components/capture/MapView';
 import ShareButton from '@/components/ui/ShareButton';
+import Button from '@/components/ui/Button';
 
 /**
  * Individual timeline item
  * Displays a moment with optional mini-map for GPS location
  */
-export default function TimelineItem({ moment, isLast }) {
+export default function TimelineItem({ moment, isLast, onEdit, onDelete }) {
   const [showMap, setShowMap] = useState(false);
 
   const hasLocation = moment.gpsLat !== 0 || moment.gpsLng !== 0;
@@ -210,8 +211,27 @@ export default function TimelineItem({ moment, isLast }) {
             <ShareButton
               moment={moment}
               onShareSuccess={() => console.log('Shared!')}
-              className="flex-1"
             />
+
+            {onEdit && (
+              <Button
+                onClick={() => onEdit(moment)}
+                variant="primary"
+                size="sm"
+              >
+                Edit
+              </Button>
+            )}
+
+            {onDelete && (
+              <Button
+                onClick={() => onDelete(moment.id)}
+                variant="danger"
+                size="sm"
+              >
+                Delete
+              </Button>
+            )}
           </div>
         </div>
       </div>

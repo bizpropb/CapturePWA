@@ -6,7 +6,7 @@ import TimelineItem from './TimelineItem';
  * Timeline group component
  * Displays a group of moments under a date label
  */
-export default function TimelineGroup({ group }) {
+export default function TimelineGroup({ group, onEdit, onDelete }) {
   return (
     <div className="relative">
       {/* Date Label */}
@@ -30,6 +30,8 @@ export default function TimelineGroup({ group }) {
             key={moment.id}
             moment={moment}
             isLast={index === group.moments.length - 1}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         ))}
       </div>

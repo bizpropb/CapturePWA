@@ -1,18 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { groupMomentsByDate } from '@/utils/date-grouping';
 import TimelineGroup from './TimelineGroup';
 import TimelineSearch from './TimelineSearch';
 import TimelineFilters from './TimelineFilters';
 import Button from '@/components/ui/Button';
 import Skeleton from '@/components/ui/Skeleton';
+import EditModal from '@/components/moments/EditModal';
 
 /**
  * Main timeline content component
  * Manages state for search, filters, pagination, and moment display
  */
 export default function TimelineContent({ initialData }) {
+  const router = useRouter();
   const [moments, setMoments] = useState(initialData?.moments || []);
   const [pagination, setPagination] = useState(initialData?.pagination || {});
   const [loading, setLoading] = useState(false);
@@ -23,6 +26,7 @@ export default function TimelineContent({ initialData }) {
     mood: null,
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [editingMoment, setEditingMoment] = useState(null);
 
   // Fetch moments when search or filters change
   useEffect(() => {
@@ -106,6 +110,54 @@ export default function TimelineContent({ initialData }) {
     setPagination(initialData?.pagination || {});
   };
 
+  /**
+   * Handle edit moment
+   */
+  const handleEdit = (moment) => {
+    setEditingMoment(moment);
+  };
+
+  /**
+   * Handle delete moment
+   */
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this moment?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/moments/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok && response.status !== 204) {
+        throw new Error('Failed to delete moment');
+      }
+
+      // Remove moment from list and refresh
+      setMoments(moments.filter((m) => m.id !== id));
+      router.refresh();
+    } catch (err) {
+      alert('Error deleting moment: ' + err.message);
+    }
+  };
+
+  /**
+   * Handle save edited moment
+   */
+  const handleSave = (updatedMoment) => {
+    // Update moment in list
+    setMoments(moments.map((m) => (m.id === updatedMoment.id ? updatedMoment : m)));
+    router.refresh();
+  };
+
+  /**
+   * Close edit modal
+   */
+  const handleCloseModal = () => {
+    setEditingMoment(null);
+  };
+
   // Group moments by date
   const groupedMoments = groupMomentsByDate(moments);
 
@@ -170,7 +222,12 @@ export default function TimelineContent({ initialData }) {
         ) : (
           <div className="space-y-8">
             {groupedMoments.map((group) => (
-              <TimelineGroup key={group.label} group={group} />
+              <TimelineGroup
+                key={group.label}
+                group={group}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         )}
@@ -206,6 +263,15 @@ export default function TimelineContent({ initialData }) {
           </div>
         )}
       </div>
+
+      {/* Edit Modal */}
+      {editingMoment && (
+        <EditModal
+          moment={editingMoment}
+          onClose={handleCloseModal}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 }
