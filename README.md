@@ -71,10 +71,24 @@ NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your_cloud_name"
 ### Installation
 
 ```bash
-npm install # Install dependencies
-npx prisma generate # Set up database
-npx prisma db push # Set up database
+npm install            # Install dependencies
+npx prisma generate    # Generate Prisma Client
+#npx prisma db push     # Set up database schema
+npx prisma db push --force-reset # Set up db AND drop all data
+npm run db:seed        # Populate with sample data (15 moments)
 ```
+
+*if you encounter the following error: 
+>Error: 
+EPERM: operation not permitted, rename 'C:YOUR_PATH\query_engine-windows.dll.node.tmp20904' -> 'C:YOUR_PATH\query_engine-windows.dll.node'
+
+just ignore it. The EPERM error is just Prisma trying to replace the query_engine-windows.dll.node file while it's locked by a running Node process (likely one of those dev servers still hanging around).
+
+**What the seed creates:**
+- 1 demo user
+- 5 categories (Personal, Work, Travel, Food, Fitness)
+- 6 tags (important, favorite, family, friends, inspiration, todo)
+- 15 diverse moments across different US cities (no media files - descriptions only)
 
 ---
 
@@ -182,18 +196,19 @@ npx prisma studio
 
 ### Other Database Commands
 
-**Clear database:**
-```bash
-rm prisma/dev.db # Remove database file
-npx prisma db push # Recreate schema
-```
-
 **Seed sample data:**
 ```bash
-npm run db:seed
+npm run db:seed  # Creates 15 diverse moments with tags and categories
 ```
 
-**Generate Prisma Client:**
+**Clear database and reseed:**
+```bash
+rm prisma/dev.db      # Remove database file
+npx prisma db push    # Recreate schema
+npm run db:seed       # Add sample data
+```
+
+**Generate Prisma Client (after schema changes):**
 ```bash
 npm run db:generate
 ```
