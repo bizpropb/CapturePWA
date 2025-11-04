@@ -114,6 +114,12 @@ npm run dev # Start development server (for coding only)
 
 **Why disabled?** next-pwa disables service workers in dev to avoid caching issues during development.
 
+### 🐌 Development Mode Performance Issue On Initial Load
+
+**First loading of each route may take 2-3 seconds** - this is completely normal in development mode. It's neither cached nor optimized yet. 
+
+**Production Build:** After running `npm run build && npm start`, initial loads drop to under 500ms due to pre-compilation, minification, and caching.
+
 ### Hardware Access Note
 
 Next.js displays two URLs:
