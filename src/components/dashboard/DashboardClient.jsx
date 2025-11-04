@@ -124,7 +124,7 @@ export default function DashboardClient({ initialMoments }) {
         </div>
 
         {moments.length === 0 ? (
-          <div className="text-center py-12 text-neutral-400">
+          <div className="text-center py-12 text-gray-400">
             <p className="text-lg mb-2">No moments yet</p>
             <p className="text-sm">Start capturing your memories!</p>
           </div>

@@ -18,7 +18,8 @@ export default function QuickCaptureButton() {
     <Button
       onClick={handleCapture}
       variant="primary"
-      className="w-full py-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500"
+      fullWidth
+      className="py-6 text-lg font-semibold"
     >
       <span className="flex items-center justify-center gap-3">
         <span className="text-3xl">📸</span>

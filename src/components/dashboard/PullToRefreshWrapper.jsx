@@ -34,7 +34,7 @@ export default function PullToRefreshWrapper({ children, onRefresh }) {
           opacity: opacity
         }}
       >
-        <div className="bg-neutral-800 border border-neutral-700 rounded-full p-4 shadow-lg">
+        <div className="bg-gray-900/50 border border-gray-700 rounded-full p-4 shadow-lg">
           {isRefreshing ? (
             <div className="w-8 h-8 flex items-center justify-center">
               <div className="w-6 h-6 border-3 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -53,7 +53,7 @@ export default function PullToRefreshWrapper({ children, onRefresh }) {
 
         {/* Pull instruction text */}
         <div className="text-center mt-2">
-          <p className="text-xs text-neutral-400 font-medium">
+          <p className="text-xs text-gray-400 font-medium">
             {isRefreshing ? 'Refreshing...' : isTriggered ? 'Release to refresh' : 'Pull to refresh'}
           </p>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Button from '@/components/ui/Button';
 import ShareButton from '@/components/ui/ShareButton';
 import MapView from '@/components/capture/MapView';
 import { useClipboard } from '@/hooks/useClipboard';
@@ -52,7 +53,7 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
   };
 
   return (
-    <div className="bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden">
+    <div className="bg-gray-900/50 border border-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden">
       {/* Image */}
       {moment.imageUrl && (
         <div className="w-full h-48 bg-gray-700 relative cursor-pointer" onClick={() => window.open(moment.imageUrl, '_blank')}>
@@ -175,52 +176,54 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
           />
 
           {/* Copy Text */}
-          <button
+          <Button
             onClick={handleCopyText}
             disabled={copying}
-            className="bg-neutral-900 border-2 border-emerald-900 text-emerald-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-emerald-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Copy moment text to clipboard"
+            variant="secondary"
+            size="sm"
           >
             {copied ? 'Copied!' : 'Copy Text'}
-          </button>
+          </Button>
 
           {/* Copy Link */}
-          <button
+          <Button
             onClick={handleCopyLink}
             disabled={copying}
-            className="bg-neutral-900 border-2 border-emerald-900 text-emerald-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-emerald-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Copy shareable link to clipboard"
+            variant="secondary"
+            size="sm"
           >
             {copied ? 'Copied!' : 'Copy Link'}
-          </button>
+          </Button>
 
           {/* Download Image Button (if image exists) */}
           {moment.imageUrl && (
-            <button
+            <Button
               onClick={handleDownloadImage}
               disabled={downloading}
-              className="bg-neutral-900 border-2 border-emerald-900 text-emerald-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-emerald-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Download image to device"
+              variant="primary"
+              size="sm"
             >
               {downloaded ? 'Downloaded!' : downloading ? 'Downloading...' : 'Download Image'}
-            </button>
+            </Button>
           )}
 
           {/* Edit Button */}
-          <button
+          <Button
             onClick={() => onEdit(moment)}
-            className="bg-neutral-900 border-2 border-purple-900 text-purple-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-purple-800 transition-colors duration-200"
+            variant="primary"
+            size="sm"
           >
             Edit
-          </button>
+          </Button>
 
           {/* Delete Button */}
-          <button
+          <Button
             onClick={() => onDelete(moment.id)}
-            className="bg-neutral-900 border-2 border-red-900 text-red-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-red-800 transition-colors duration-200"
+            variant="danger"
+            size="sm"
           >
             Delete
-          </button>
+          </Button>
         </div>
       </div>
     </div>

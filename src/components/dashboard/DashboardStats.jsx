@@ -52,7 +52,7 @@ export default function DashboardStats({ stats }) {
                 {stat.value}
               </span>
             </div>
-            <p className="text-sm text-neutral-400 font-medium">{stat.label}</p>
+            <p className="text-sm text-gray-400 font-medium">{stat.label}</p>
           </div>
         </Card>
       ))}
