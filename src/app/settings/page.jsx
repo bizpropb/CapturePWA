@@ -1,9 +1,10 @@
 'use client';
 
-import { MainLayout, PageHeader } from '@/components/layout';
+import MainLayout from '@/components/layout/MainLayout';
 import { InstallButton } from '@/components/layout/InstallPrompt';
 import Card from '@/components/ui/Card';
 import dynamic from 'next/dynamic';
+import PageHeader from '@/components/layout/PageHeader';
 
 // Import new settings components
 import HardwarePermissions from '@/components/settings/HardwarePermissions';
@@ -40,12 +41,12 @@ const DataManagement = dynamic(
 export default function SettingsPage() {
   return (
     <MainLayout>
-      <PageHeader
-        title="Settings"
-        subtitle="Configure your PWA experience"
-      />
-
-      <div className="max-w-4xl mx-auto px-4 pb-20">
+      <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
+        {/* Page Header with Online Indicator */}
+        <PageHeader
+          title="Settings"
+          description="Configure your PWA experience"
+        />
         <div className="space-y-8">
           {/* ========== ACCOUNT SECTION ========== */}
           <section>
@@ -177,7 +178,7 @@ export default function SettingsPage() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <a
-                      href="https://github.com/yourusername/capturepwa"
+                      href="https://github.com/bizpropb/CapturePWA"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-blue-400 hover:text-blue-300 transition-colors"

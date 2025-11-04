@@ -7,7 +7,7 @@ export default function BatteryStatus() {
 
   if (!battery.isSupported) {
     return (
-      <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+      <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-2xl">🔋</span>
           <h3 className="text-white font-semibold">Battery Status</h3>
@@ -34,7 +34,7 @@ export default function BatteryStatus() {
   };
 
   return (
-    <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+    <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-2xl">{battery.icon}</span>
         <h3 className="text-white font-semibold">Battery Status</h3>

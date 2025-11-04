@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { checkAudioSupport, requestMicrophone, stopMediaStream } from '@/lib/hardware-utils';
 import { useAutoWakeLock } from '@/hooks/useWakeLock';
+import Button from '@/components/ui/Button';
 
 /**
  * Enhanced Audio Recorder Component
@@ -643,23 +644,27 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
   // Initial view
   return (
     <div className="space-y-3">
-      <button
-        type="button"
-        onClick={() => startRecording(false)}
-        className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200"
-      >
-        🎙️ Start Recording
-      </button>
-
-      {transcriptSupported && (
-        <button
+      <div className="grid grid-cols-2 gap-2">
+        <Button
           type="button"
-          onClick={() => startRecording(true)}
-          className="w-full bg-purple-900 text-white py-2 px-4 rounded-md hover:bg-purple-800 transition-colors duration-200"
+          onClick={() => startRecording(false)}
+          variant="primary"
+          size="sm"
         >
-          🎤 Record with Transcription
-        </button>
-      )}
+          🎙️ Start Recording
+        </Button>
+
+        {transcriptSupported && (
+          <Button
+            type="button"
+            onClick={() => startRecording(true)}
+            variant="primary"
+            size="sm"
+          >
+            🎤 Record with Transcription
+          </Button>
+        )}
+      </div>
 
       {error && (
         <p className="text-sm text-red-400">{error}</p>

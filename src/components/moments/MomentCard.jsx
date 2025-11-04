@@ -52,7 +52,7 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden">
+    <div className="bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden">
       {/* Image */}
       {moment.imageUrl && (
         <div className="w-full h-48 bg-gray-700 relative cursor-pointer" onClick={() => window.open(moment.imageUrl, '_blank')}>
@@ -167,96 +167,60 @@ export default function MomentCard({ moment, onDelete, onEdit }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-4 flex flex-col gap-2">
-          {/* Share Button (Full Width) */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {/* Share Button */}
           <ShareButton
             moment={moment}
             onShareSuccess={() => console.log('Shared successfully!')}
-            className="w-full"
           />
 
-          {/* Copy Buttons (Side by Side) */}
-          <div className="flex gap-2">
-            <button
-              onClick={handleCopyText}
-              disabled={copying}
-              className="flex-1 bg-green-900 text-white py-2 px-4 rounded hover:bg-green-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              title="Copy moment text to clipboard"
-            >
-              {copied ? (
-                <>
-                  <span>✓</span>
-                  <span>Copied!</span>
-                </>
-              ) : (
-                <>
-                  <span>📋</span>
-                  <span>Copy Text</span>
-                </>
-              )}
-            </button>
-            <button
-              onClick={handleCopyLink}
-              disabled={copying}
-              className="flex-1 bg-purple-900 text-white py-2 px-4 rounded hover:bg-purple-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              title="Copy shareable link to clipboard"
-            >
-              {copied ? (
-                <>
-                  <span>✓</span>
-                  <span>Copied!</span>
-                </>
-              ) : (
-                <>
-                  <span>🔗</span>
-                  <span>Copy Link</span>
-                </>
-              )}
-            </button>
-          </div>
+          {/* Copy Text */}
+          <button
+            onClick={handleCopyText}
+            disabled={copying}
+            className="bg-neutral-900 border-2 border-emerald-900 text-emerald-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-emerald-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Copy moment text to clipboard"
+          >
+            {copied ? 'Copied!' : 'Copy Text'}
+          </button>
+
+          {/* Copy Link */}
+          <button
+            onClick={handleCopyLink}
+            disabled={copying}
+            className="bg-neutral-900 border-2 border-emerald-900 text-emerald-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-emerald-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Copy shareable link to clipboard"
+          >
+            {copied ? 'Copied!' : 'Copy Link'}
+          </button>
 
           {/* Download Image Button (if image exists) */}
           {moment.imageUrl && (
             <button
               onClick={handleDownloadImage}
               disabled={downloading}
-              className="w-full bg-indigo-900 text-white py-2 px-4 rounded hover:bg-indigo-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="bg-neutral-900 border-2 border-emerald-900 text-emerald-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-emerald-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               title="Download image to device"
             >
-              {downloaded ? (
-                <>
-                  <span>✓</span>
-                  <span>Downloaded!</span>
-                </>
-              ) : downloading ? (
-                <>
-                  <span>⏳</span>
-                  <span>Downloading...</span>
-                </>
-              ) : (
-                <>
-                  <span>💾</span>
-                  <span>Download Image</span>
-                </>
-              )}
+              {downloaded ? 'Downloaded!' : downloading ? 'Downloading...' : 'Download Image'}
             </button>
           )}
 
-          {/* Edit & Delete Buttons (Side by Side) */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => onEdit(moment)}
-              className="flex-1 bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-800 transition-colors duration-200"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => onDelete(moment.id)}
-              className="flex-1 bg-red-900 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors duration-200"
-            >
-              Delete
-            </button>
-          </div>
+          {/* Edit Button */}
+          <button
+            onClick={() => onEdit(moment)}
+            className="bg-neutral-900 border-2 border-purple-900 text-purple-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-purple-800 transition-colors duration-200"
+          >
+            Edit
+          </button>
+
+          {/* Delete Button */}
+          <button
+            onClick={() => onDelete(moment.id)}
+            className="bg-neutral-900 border-2 border-red-900 text-red-100 py-2 px-4 rounded hover:bg-neutral-800 hover:border-red-800 transition-colors duration-200"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>

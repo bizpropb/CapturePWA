@@ -27,7 +27,7 @@ export default function DashboardContent({ stats, recentMoments }) {
 
   return (
     <PullToRefreshWrapper onRefresh={handleRefresh}>
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div>
         {/* Welcome section with date and motivational message */}
         <WelcomeSection />
 

@@ -281,7 +281,7 @@ export default function ServiceWorkerStatus() {
             <Button
               onClick={unregisterServiceWorker}
               disabled={loading}
-              variant="ghost"
+              variant="danger"
               size="sm"
               fullWidth
             >

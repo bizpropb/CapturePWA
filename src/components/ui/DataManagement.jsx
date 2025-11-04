@@ -15,6 +15,7 @@
 import { useState } from 'react';
 import { useExportMoments, useImportMoments } from '@/hooks/useFileSystem';
 import { fetchMoments, createMoment } from '@/lib/api';
+import Button from '@/components/ui/Button';
 
 export default function DataManagement() {
   const [moments, setMoments] = useState([]);
@@ -156,23 +157,23 @@ export default function DataManagement() {
   return (
     <div className="space-y-6">
       {/* Export Section */}
-      <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-        <h4 className="text-sm font-semibold text-white mb-3">📤 Export Data</h4>
+      <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+        <h4 className="text-sm font-semibold text-white mb-3"> Export Data</h4>
         <p className="text-sm text-gray-400 mb-4">
           Download all your moments as a JSON file. This creates a backup that you can import later.
         </p>
 
-        <button
+        <Button
           onClick={handleExport}
           disabled={exporting || loadingMoments}
-          className="w-full bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="primary"
         >
           {exporting || loadingMoments
-            ? '⏳ Exporting...'
+            ? ' Exporting...'
             : exportSuccess
-            ? '✓ Exported!'
-            : '📤 Export All Moments'}
-        </button>
+            ? ' Exported!'
+            : ' Export All Moments'}
+        </Button>
 
         {exportError && (
           <p className="text-sm text-red-400 mt-2">Error: {exportError}</p>
@@ -186,7 +187,7 @@ export default function DataManagement() {
       </div>
 
       {/* Import Section */}
-      <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+      <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
         <h4 className="text-sm font-semibold text-white mb-3">📥 Import Data</h4>
         <p className="text-sm text-gray-400 mb-4">
           Import moments from a previously exported JSON file. This will add moments to your existing collection.
@@ -199,7 +200,7 @@ export default function DataManagement() {
               accept=".json,application/json"
               onChange={handleFileSelect}
               disabled={loadingImport}
-              className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-900 file:text-white hover:file:bg-green-800 file:cursor-pointer disabled:opacity-50"
+              className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-normal file:bg-blue-900 file:text-white hover:file:bg-blue-700 file:cursor-pointer disabled:opacity-50"
             />
 
             {importError && (
@@ -209,7 +210,7 @@ export default function DataManagement() {
         ) : (
           /* Import Preview */
           <div className="space-y-4">
-            <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <div className="bg-black/40 rounded-lg p-4 border border-neutral-700">
               <h5 className="text-sm font-semibold text-white mb-2">Import Preview</h5>
               <div className="text-sm text-gray-300 space-y-1">
                 <p><span className="font-medium">Version:</span> {importPreview.version}</p>
@@ -270,9 +271,9 @@ export default function DataManagement() {
       </div>
 
       {/* Info */}
-      <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
-        <h4 className="text-sm font-semibold text-blue-300 mb-2">💡 Tips</h4>
-        <ul className="text-xs text-blue-200 space-y-1 list-disc list-inside">
+      <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+        <h4 className="text-sm font-semibold text-neutral-300 mb-2">💡 Tips</h4>
+        <ul className="text-xs text-neutral-400 space-y-1 list-disc list-inside">
           <li>Export regularly to back up your moments</li>
           <li>Imported moments will be added to your existing collection</li>
           <li>Media (images, audio) are stored as URLs and remain on Cloudinary</li>

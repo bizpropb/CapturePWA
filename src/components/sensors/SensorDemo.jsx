@@ -36,7 +36,7 @@ export default function SensorDemo() {
   return (
     <div className="space-y-6">
       {/* Shake to Refresh */}
-      <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+      <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-2xl">📳</span>
           <h3 className="text-white font-semibold">Shake Detection</h3>
@@ -62,7 +62,7 @@ export default function SensorDemo() {
                 <div className={`text-center p-6 rounded-lg transition ${
                   shake.isShaking
                     ? 'bg-blue-500/20 border-2 border-blue-500'
-                    : 'bg-neutral-800'
+                    : 'bg-gray-900/50 border border-gray-700'
                 }`}>
                   <p className="text-2xl mb-2">{shake.isShaking ? '📳' : '📱'}</p>
                   <p className="text-white font-semibold">
@@ -81,7 +81,7 @@ export default function SensorDemo() {
       </div>
 
       {/* Device Orientation */}
-      <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+      <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🧭</span>
@@ -147,7 +147,7 @@ export default function SensorDemo() {
       </div>
 
       {/* Step Counter */}
-      <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+      <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-2xl">👟</span>
@@ -205,7 +205,7 @@ export default function SensorDemo() {
       </div>
 
       {/* Ambient Light Sensor */}
-      <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+      <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-2xl">💡</span>

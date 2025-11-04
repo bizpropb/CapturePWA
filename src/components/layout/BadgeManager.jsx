@@ -73,7 +73,7 @@ export default function BadgeManager() {
       </p>
 
       {/* Support Status */}
-      <div className="mb-4 p-3 rounded bg-gray-800 border border-gray-700">
+      <div className="mb-4 p-3 rounded bg-gray-900/50 border border-gray-700">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">Badge API Status:</span>
           <span
@@ -103,7 +103,7 @@ export default function BadgeManager() {
       </div>
 
       {/* How It Works */}
-      <div className="mb-4 p-3 rounded bg-gray-800/50 border border-gray-700">
+      <div className="mb-4 p-3 rounded bg-gray-900/50 border border-gray-700">
         <h4 className="text-sm font-semibold mb-2">How it works:</h4>
         <ul className="text-xs text-gray-400 space-y-1 list-disc list-inside">
           <li>Badge shows pending sync count when app is in background</li>
@@ -114,7 +114,7 @@ export default function BadgeManager() {
       </div>
 
       {/* Test Controls */}
-      <div className="space-y-3">
+      <div className="space-y-3 p-3 rounded bg-gray-900/50 border border-gray-700">
         <div>
           <label className="block text-sm font-medium mb-2">Test Badge:</label>
           <div className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export default function BadgeManager() {
             <Button
               onClick={handleSetTestBadge}
               disabled={loading}
-              variant="secondary"
+              variant="primary"
               size="sm"
             >
               Set Badge
@@ -150,7 +150,7 @@ export default function BadgeManager() {
           <Button
             onClick={handleClearBadge}
             disabled={loading}
-            variant="ghost"
+            variant="danger"
             size="sm"
             fullWidth
           >
@@ -160,7 +160,7 @@ export default function BadgeManager() {
       </div>
 
       {/* Browser Support Info */}
-      <div className="mt-4 p-2 rounded bg-gray-800/30 border border-gray-700/50">
+      <div className="mt-4 p-3 rounded bg-gray-900/30 border border-gray-700">
         <p className="text-xs text-gray-500">
           <strong>Browser Support:</strong> Badge API is supported in Chromium-based
           browsers (Chrome, Edge, Opera) on desktop and Android. Safari and Firefox

@@ -10,7 +10,7 @@ export default function TimelineGroup({ group }) {
   return (
     <div className="relative">
       {/* Date Label */}
-      <div className="sticky top-0 z-10 bg-gray-900 py-3 mb-4">
+      <div className="sticky top-0 z-10 bg-gray-900 py-3 px-4 mb-4 -mx-4 rounded-lg">
         <h2 className="text-2xl font-bold text-gray-100 flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-blue-500"></span>
           {group.label}

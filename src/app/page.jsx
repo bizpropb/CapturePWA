@@ -1,6 +1,7 @@
-import { MainLayout, PageHeader } from '@/components/layout';
+import MainLayout from '@/components/layout/MainLayout';
 import SyncIndicator from '@/components/layout/SyncIndicator';
 import DashboardContent from '@/components/dashboard/DashboardContent';
+import PageHeader from '@/components/layout/PageHeader';
 
 /**
  * Home/Dashboard Page
@@ -53,18 +54,17 @@ export default async function Home() {
 
   return (
     <MainLayout>
-      <PageHeader
-        title="Dashboard"
-        description="Your moment-capturing hub"
-        actions={
-          <div className="flex items-center gap-3">
-            <SyncIndicator />
-          </div>
-        }
-      />
+      <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
+        {/* Page Header with Sync and Online Indicators */}
+        <PageHeader
+          title="Dashboard"
+          description="Your moment-capturing hub"
+          actions={<SyncIndicator />}
+        />
 
-      {/* Dashboard content with pull-to-refresh */}
-      <DashboardContent stats={stats} recentMoments={recentMoments} />
+        {/* Dashboard content with pull-to-refresh */}
+        <DashboardContent stats={stats} recentMoments={recentMoments} />
+      </div>
     </MainLayout>
   );
 }

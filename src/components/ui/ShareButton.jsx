@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Button from './Button';
 
 /**
  * ShareButton Component - Web Share API Implementation
@@ -149,42 +150,16 @@ export default function ShareButton({ moment, onShareSuccess, className = '' }) 
   };
 
   return (
-    <button
-      onClick={handleClick}
-      disabled={isSharing}
-      className={`
-        relative flex items-center justify-center gap-2
-        bg-green-600 text-white py-2 px-4 rounded
-        hover:bg-green-700 active:bg-green-800
-        disabled:opacity-50 disabled:cursor-not-allowed
-        transition-all duration-200
-        ${className}
-      `}
-      title={canShare ? 'Share' : 'Copy link'}
-    >
-      {/* Icon */}
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
+    <div className={`relative inline-block ${className}`}>
+      <Button
+        onClick={handleClick}
+        disabled={isSharing}
+        variant="primary"
+        loading={isSharing}
+        title={canShare ? 'Share' : 'Copy link'}
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-        />
-      </svg>
-
-      {/* Text */}
-      {isSharing ? (
-        <span>Sharing...</span>
-      ) : showCopied ? (
-        <span>✓ Copied!</span>
-      ) : (
-        <span>{canShare ? 'Share' : 'Copy Link'}</span>
-      )}
+        {isSharing ? 'Sharing...' : showCopied ? 'Copied!' : (canShare ? 'Share' : 'Copy Link')}
+      </Button>
 
       {/* Success indicator */}
       {showCopied && (
@@ -192,6 +167,6 @@ export default function ShareButton({ moment, onShareSuccess, className = '' }) 
           Link copied to clipboard!
         </div>
       )}
-    </button>
+    </div>
   );
 }

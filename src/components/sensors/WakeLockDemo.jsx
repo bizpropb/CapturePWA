@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useWakeLock } from '@/hooks/useWakeLock';
+import Button from '@/components/ui/Button';
 
 export default function WakeLockDemo() {
   const wakeLock = useWakeLock();
@@ -19,7 +20,7 @@ export default function WakeLockDemo() {
 
   if (!wakeLock.isSupported) {
     return (
-      <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+      <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-2xl">📱</span>
           <h3 className="text-white font-semibold">Screen Wake Lock</h3>
@@ -36,7 +37,7 @@ export default function WakeLockDemo() {
   }
 
   return (
-    <div className="bg-neutral-900 p-4 rounded-lg border border-neutral-800">
+    <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-2xl">📱</span>
         <h3 className="text-white font-semibold">Screen Wake Lock</h3>
@@ -44,10 +45,10 @@ export default function WakeLockDemo() {
 
       <div className="space-y-4">
         {/* Status Display */}
-        <div className={`p-4 rounded-lg border-2 transition ${
+        <div className={`p-4 rounded-lg border-2 ${
           wakeLock.isActive
             ? 'bg-green-500/20 border-green-500'
-            : 'bg-neutral-800 border-neutral-700'
+            : 'bg-gray-900/30 border-gray-700'
         }`}>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-neutral-400">Status</span>
@@ -63,29 +64,26 @@ export default function WakeLockDemo() {
             </div>
           </div>
 
-          {wakeLock.isActive && (
-            <p className="text-xs text-green-300 mt-2">
-              ✓ Your screen will not turn off or dim while wake lock is active
-            </p>
-          )}
+          <p className={`text-xs mt-2 ${wakeLock.isActive ? 'text-green-300' : 'text-red-300'}`}>
+            {wakeLock.isActive 
+              ? '✓ Your screen will not turn off or dim while wake lock is active'
+              : '✗ Your screen may turn off or dim because wake lock is inactive'}
+          </p>
         </div>
 
         {/* Simulation Controls */}
-        <div className="space-y-3">
+        <div className="space-y-3 p-3 rounded bg-gray-900/30 border border-gray-700">
           <p className="text-sm text-neutral-400">
             Simulate an activity (video recording, audio playback):
           </p>
 
-          <button
+          <Button 
             onClick={toggleSimulation}
-            className={`w-full py-3 px-4 rounded-lg font-medium transition ${
-              simulatedActivity
-                ? 'bg-red-600 hover:bg-red-700 text-white'
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
-            }`}
+            variant={simulatedActivity ? 'secondary' : 'secondary'}
+            fullWidth
           >
             {simulatedActivity ? 'Stop Activity' : 'Start Activity'}
-          </button>
+          </Button>
 
           {simulatedActivity && (
             <div className="bg-blue-500/20 border border-blue-500/30 p-3 rounded-lg">
@@ -97,23 +95,30 @@ export default function WakeLockDemo() {
           )}
         </div>
 
-        {/* Manual Controls */}
-        <div className="pt-4 border-t border-neutral-700 space-y-2">
-          <p className="text-xs text-neutral-400 mb-2">Manual Controls:</p>
-          <div className="grid grid-cols-2 gap-2">
+        {/* Screen Lock Toggle */}
+        <div className="p-4 bg-gray-900/50 border border-gray-700 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xl">📱</span>
+                <h4 className="font-medium">Screen Lock</h4>
+              </div>
+              <p className="text-sm text-gray-400">
+                Prevent screen from turning off
+              </p>
+            </div>
             <button
-              onClick={wakeLock.request}
-              disabled={wakeLock.isActive}
-              className="py-2 px-3 bg-neutral-700 hover:bg-neutral-600 disabled:bg-neutral-800 disabled:text-neutral-600 text-white rounded text-sm transition"
+              onClick={wakeLock.isActive ? wakeLock.release : wakeLock.request}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                wakeLock.isActive ? 'bg-blue-600' : 'bg-gray-600'
+              }`}
+              aria-label="Toggle screen lock"
             >
-              Request Lock
-            </button>
-            <button
-              onClick={wakeLock.release}
-              disabled={!wakeLock.isActive}
-              className="py-2 px-3 bg-neutral-700 hover:bg-neutral-600 disabled:bg-neutral-800 disabled:text-neutral-600 text-white rounded text-sm transition"
-            >
-              Release Lock
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  wakeLock.isActive ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
             </button>
           </div>
         </div>
@@ -128,7 +133,7 @@ export default function WakeLockDemo() {
         )}
 
         {/* Info */}
-        <div className="bg-neutral-800 p-3 rounded-lg space-y-2">
+        <div className="bg-gray-900/30 p-3 rounded-lg border border-gray-700 space-y-2">
           <p className="text-xs font-semibold text-neutral-300">How It Works:</p>
           <ul className="text-xs text-neutral-400 space-y-1 list-disc list-inside">
             <li>Automatically activated during video recording</li>

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { checkCameraSupport, requestCamera, stopMediaStream } from '@/lib/hardware-utils';
 import { useAutoWakeLock } from '@/hooks/useWakeLock';
 import jsQR from 'jsqr';
+import Button from '@/components/ui/Button';
 
 /**
  * Enhanced Camera Capture Component
@@ -754,52 +755,41 @@ export default function CameraCapture({ onCapture, onError, allowMultiple = fals
   if (!isOpen) {
     return (
       <div className="space-y-4">
-        {/* Mode selector */}
-        <div className="grid grid-cols-3 gap-2">
-          <button
+        {/* Mode selector - 4 in a row */}
+        <div className="grid grid-cols-4 gap-2">
+          <Button
             type="button"
             onClick={() => setMode('photo')}
-            className={`py-2 px-4 rounded-md transition-colors duration-200 ${
-              mode === 'photo'
-                ? 'bg-blue-900 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-            }`}
+            variant="primary"
+            size="sm"
           >
             📷 Photo
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => setMode('video')}
-            className={`py-2 px-4 rounded-md transition-colors duration-200 ${
-              mode === 'video'
-                ? 'bg-blue-900 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-            }`}
+            variant="primary"
+            size="sm"
           >
             🎥 Video
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => setMode('qr')}
-            className={`py-2 px-4 rounded-md transition-colors duration-200 ${
-              mode === 'qr'
-                ? 'bg-blue-900 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-            }`}
+            variant="primary"
+            size="sm"
           >
             📱 QR
-          </button>
+          </Button>
+          <Button
+            type="button"
+            onClick={startCamera}
+            variant="primary"
+            size="sm"
+          >
+            Open Camera
+          </Button>
         </div>
-
-        <button
-          type="button"
-          onClick={startCamera}
-          className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200"
-        >
-          {mode === 'photo' && 'Open Camera'}
-          {mode === 'video' && 'Start Video Camera'}
-          {mode === 'qr' && 'Start QR Scanner'}
-        </button>
 
         {error && (
           <p className="text-sm text-red-400">{error}</p>

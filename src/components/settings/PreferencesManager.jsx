@@ -123,7 +123,7 @@ export default function PreferencesManager() {
                 <h4 className="font-medium">Dark Mode</h4>
               </div>
               <p className="text-sm text-gray-400">
-                Use dark theme throughout the app
+                Use dark theme throughout the app (This app has no lightmode🙃)
               </p>
             </div>
             <button
@@ -221,7 +221,7 @@ export default function PreferencesManager() {
           <Button
             onClick={loadPreferences}
             disabled={saving}
-            variant="ghost"
+            variant="danger"
             fullWidth
           >
             Cancel
@@ -233,7 +233,7 @@ export default function PreferencesManager() {
         <Button
           onClick={resetPreferences}
           disabled={saving}
-          variant="ghost"
+          variant="danger"
           size="sm"
           fullWidth
         >

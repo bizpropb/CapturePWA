@@ -1,4 +1,5 @@
-import { MainLayout, PageHeader } from '@/components/layout';
+import MainLayout from '@/components/layout/MainLayout';
+import PageHeader from '@/components/layout/PageHeader';
 import GalleryContent from '@/components/gallery/GalleryContent';
 
 /**
@@ -23,13 +24,16 @@ export default function GalleryPage() {
   // Client-side rendering - data fetched in GalleryContent component
   return (
     <MainLayout>
-      <PageHeader
-        title="Gallery"
-        description="Browse your captured moments"
-      />
+      <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
+        {/* Page Header with Online Indicator */}
+        <PageHeader
+          title="Gallery"
+          description="Browse your captured moments"
+        />
 
-      {/* Gallery content with filters and grid */}
-      <GalleryContent initialMoments={{ moments: [], pagination: { page: 1, limit: 20, totalCount: 0, totalPages: 0, hasMore: false } }} />
+        {/* Gallery content with filters and grid */}
+        <GalleryContent initialMoments={{ moments: [], pagination: { page: 1, limit: 20, totalCount: 0, totalPages: 0, hasMore: false } }} />
+      </div>
     </MainLayout>
   );
 }

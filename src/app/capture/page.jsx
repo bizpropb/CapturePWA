@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { MainLayout, PageHeader } from '@/components/layout';
+import MainLayout from '@/components/layout/MainLayout';
 import MomentForm from '@/components/capture/MomentForm';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
@@ -76,14 +76,13 @@ function CaptureContent() {
 
   return (
     <MainLayout>
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        <PageHeader
-          title="Capture Moment"
-          subtitle={sharedData ? "📥 Shared content received" : "Create a new moment"}
-        />
-
-        {/* Online/Offline Status */}
-        <div className="mb-4 flex items-center justify-between">
+      <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
+        {/* Page Header with Online Status */}
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Create a Moment</h1>
+            <p className="text-neutral-400">{sharedData ? "📥 Shared content received" : "Capture your life"}</p>
+          </div>
           <div className="flex items-center space-x-2">
             <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`} />
             <span className="text-sm text-gray-400">
@@ -135,16 +134,6 @@ function CaptureContent() {
           onSuccess={handleMomentCreated}
           sharedData={sharedData}
         />
-
-        {/* Back Button */}
-        <div className="mt-6">
-          <button
-            onClick={() => router.push('/')}
-            className="text-gray-400 hover:text-white transition-colors duration-200"
-          >
-            ← Back to Home
-          </button>
-        </div>
       </div>
     </MainLayout>
   );
@@ -154,7 +143,7 @@ export default function CapturePage() {
   return (
     <Suspense fallback={
       <MainLayout>
-        <div className="max-w-2xl mx-auto px-4 py-6">
+        <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
           </div>

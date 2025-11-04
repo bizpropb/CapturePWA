@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import MainLayout from '@/components/layout/MainLayout';
+import PageHeader from '@/components/layout/PageHeader';
 
 // Dynamically import the map component (client-side only)
 const LocationMap = dynamic(() => import('@/components/stats/LocationMap'), {
@@ -111,7 +112,7 @@ export default function StatsPage() {
   if (loading && !stats) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="text-center">
               <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -126,7 +127,7 @@ export default function StatsPage() {
   if (error) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
           <Card className="p-8 text-center">
             <p className="text-red-500 text-lg mb-4">{error}</p>
             <Button onClick={() => fetchStats(dateRange.start, dateRange.end)}>
@@ -142,12 +143,12 @@ export default function StatsPage() {
 
   return (
     <MainLayout>
-    <div className="container mx-auto px-4 py-8 pb-24">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Analytics & Statistics</h1>
-        <p className="text-neutral-400">Insights into your captured moments</p>
-      </div>
+    <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
+      {/* Page Header with Online Indicator */}
+      <PageHeader
+        title="Analytics & Statistics"
+        description="Insights into your captured moments"
+      />
 
       {/* Controls */}
       <Card className="p-6 mb-8">
@@ -338,12 +339,10 @@ export default function StatsPage() {
       )}
 
       {/* Capture Frequency Heatmap */}
-      {Object.keys(stats.captureFrequency).length > 0 && (
-        <Card className="p-6 mt-8">
-          <h2 className="text-xl font-semibold mb-4">Capture Frequency</h2>
-          <CaptureHeatmap data={stats.captureFrequency} />
-        </Card>
-      )}
+      <Card className="p-6 mt-8">
+        <h2 className="text-xl font-semibold mb-4">Capture Frequency Heatmap</h2>
+        <CaptureHeatmap data={stats.captureFrequency} />
+      </Card>
 
       {/* GPS Locations Map */}
       {stats.locations.length > 0 && (
@@ -370,18 +369,24 @@ export default function StatsPage() {
 
 // Capture Frequency Heatmap Component
 function CaptureHeatmap({ data }) {
-  // Convert data to array and sort by date
-  const dates = Object.entries(data)
-    .sort(([a], [b]) => new Date(a) - new Date(b))
-    .slice(-90); // Last 90 days
+  // Generate all 30 days from today backwards
+  const days = [];
+  const today = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    const count = data[dateStr] || 0;
+    days.push({ date: dateStr, count, dateObj: date });
+  }
 
   // Find max count for color scaling
-  const maxCount = Math.max(...dates.map(([, count]) => count));
+  const maxCount = Math.max(...days.map(d => d.count), 1);
 
   // Get color intensity based on count
   const getColor = (count) => {
+    if (count === 0) return '#171717';
     const intensity = count / maxCount;
-    if (intensity === 0) return '#171717';
     if (intensity < 0.25) return '#1e3a8a';
     if (intensity < 0.5) return '#1e40af';
     if (intensity < 0.75) return '#2563eb';
@@ -389,19 +394,32 @@ function CaptureHeatmap({ data }) {
   };
 
   return (
-    <div className="grid grid-cols-7 gap-2">
-      {dates.map(([date, count]) => (
-        <div
-          key={date}
-          className="aspect-square rounded-md relative group cursor-pointer transition-transform hover:scale-110"
-          style={{ backgroundColor: getColor(count) }}
-          title={`${new Date(date).toLocaleDateString()}: ${count} moment${count !== 1 ? 's' : ''}`}
-        >
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-xs font-semibold">{count}</span>
+    <div className="flex flex-col gap-4">
+      <div className="text-sm text-neutral-400">
+        Last 30 days
+      </div>
+      <div className="grid grid-cols-10 sm:grid-cols-15 md:grid-cols-30 gap-1">
+        {days.map(({ date, count, dateObj }) => (
+          <div
+            key={date}
+            className="w-3 h-3 rounded-sm relative group cursor-pointer transition-transform hover:scale-150"
+            style={{ backgroundColor: getColor(count) }}
+            title={`${dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}: ${count} moment${count !== 1 ? 's' : ''}`}
+          >
           </div>
+        ))}
+      </div>
+      <div className="flex items-center gap-4 text-xs text-neutral-400">
+        <span>Less</span>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#171717' }}></div>
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#1e3a8a' }}></div>
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#1e40af' }}></div>
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#2563eb' }}></div>
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#3b82f6' }}></div>
         </div>
-      ))}
+        <span>More</span>
+      </div>
     </div>
   );
 }

@@ -273,7 +273,7 @@ export default function HardwarePermissions() {
                   <Button
                     onClick={item.testFn}
                     disabled={isLoading}
-                    variant="secondary"
+                    variant="primary"
                     size="sm"
                   >
                     {isLoading ? 'Testing...' : 'Test'}

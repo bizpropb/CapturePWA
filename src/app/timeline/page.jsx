@@ -1,4 +1,5 @@
-import { MainLayout, PageHeader } from '@/components/layout';
+import MainLayout from '@/components/layout/MainLayout';
+import PageHeader from '@/components/layout/PageHeader';
 import TimelineContent from '@/components/timeline/TimelineContent';
 import { getTimelineMoments } from '@/lib/timeline-api';
 
@@ -68,13 +69,16 @@ export default async function TimelinePage() {
 
   return (
     <MainLayout>
-      <PageHeader
-        title="Timeline"
-        description="Your moments in chronological order"
-      />
+      <div className="container mx-auto max-w-[1200px] px-4 py-8 pb-24">
+        {/* Page Header with Online Indicator */}
+        <PageHeader
+          title="Timeline"
+          description="Your moments in chronological order"
+        />
 
-      {/* Timeline content with search and filters */}
-      <TimelineContent initialData={initialData} />
+        {/* Timeline content with search and filters */}
+        <TimelineContent initialData={initialData} />
+      </div>
     </MainLayout>
   );
 }

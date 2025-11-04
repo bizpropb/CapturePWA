@@ -84,7 +84,7 @@ export default function LocationMap({ locations }) {
         center={center}
         zoom={zoom}
         style={{ height: '100%', width: '100%' }}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         attributionControl={false}
       >
         <TileLayer

@@ -254,41 +254,41 @@ export default function StorageInfo() {
           <Button
             onClick={checkStorage}
             disabled={loading || clearing}
-            variant="secondary"
+            variant="primary"
             fullWidth
           >
             {loading ? 'Checking...' : 'Refresh Storage Info'}
           </Button>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <Button
               onClick={clearCache}
               disabled={clearing}
-              variant="ghost"
+              variant="danger"
               size="sm"
+              fullWidth
             >
               Clear Cache
             </Button>
             <Button
               onClick={clearIndexedDB}
               disabled={clearing}
-              variant="ghost"
+              variant="danger"
               size="sm"
+              fullWidth
             >
               Clear IndexedDB
             </Button>
+            <Button
+              onClick={clearAllData}
+              disabled={clearing}
+              variant="danger"
+              size="sm"
+              fullWidth
+            >
+              {clearing ? 'Clearing...' : 'Clear All Data'}
+            </Button>
           </div>
-
-          <Button
-            onClick={clearAllData}
-            disabled={clearing}
-            variant="ghost"
-            size="sm"
-            fullWidth
-            className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
-          >
-            {clearing ? 'Clearing...' : 'Clear All Data'}
-          </Button>
         </div>
 
         {/* Warning */}

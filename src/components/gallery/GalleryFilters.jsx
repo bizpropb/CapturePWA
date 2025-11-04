@@ -82,7 +82,7 @@ export default function GalleryFilters({ filters, onFilterChange }) {
           {hasActiveFilters && (
             <Button
               onClick={resetFilters}
-              variant="ghost"
+              variant="secondary"
               size="sm"
             >
               Reset All
@@ -106,20 +106,18 @@ export default function GalleryFilters({ filters, onFilterChange }) {
           </label>
           <div className="flex flex-wrap gap-2">
             {['all', 'image', 'audio', 'video'].map((type) => (
-              <button
+              <Button
                 key={type}
                 onClick={() => handleMediaTypeChange(type)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filters.mediaType === type
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
+                variant={filters.mediaType === type ? 'primary' : 'secondary'}
+                size="sm"
+                className="min-w-[100px]"
               >
                 {type === 'all' && '🖼️ All'}
                 {type === 'image' && '📷 Images'}
                 {type === 'audio' && '🎤 Audio'}
                 {type === 'video' && '🎬 Video'}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -135,17 +133,15 @@ export default function GalleryFilters({ filters, onFilterChange }) {
               { value: 'oldest', label: '🕑 Oldest' },
               { value: 'mostViewed', label: '👁️ Most Viewed' },
             ].map((option) => (
-              <button
+              <Button
                 key={option.value}
                 onClick={() => handleSortChange(option.value)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filters.sortBy === option.value
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
+                variant={filters.sortBy === option.value ? 'primary' : 'secondary'}
+                size="sm"
+                className="min-w-[120px]"
               >
                 {option.label}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -185,17 +181,15 @@ export default function GalleryFilters({ filters, onFilterChange }) {
             </label>
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
-                <button
+                <Button
                   key={category.id}
                   onClick={() => handleCategoryChange(category.id)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filters.categoryId === category.id
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
+                  variant={filters.categoryId === category.id ? 'primary' : 'secondary'}
+                  size="sm"
+                  className="whitespace-nowrap"
                 >
                   {category.icon} {category.name}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -208,24 +202,20 @@ export default function GalleryFilters({ filters, onFilterChange }) {
               Tags {filters.tagIds.length > 0 && `(${filters.tagIds.length} selected)`}
             </label>
             <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <button
-                  key={tag.id}
-                  onClick={() => handleTagToggle(tag.id)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filters.tagIds.includes(tag.id)
-                      ? 'text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                  style={
-                    filters.tagIds.includes(tag.id)
-                      ? { backgroundColor: tag.color }
-                      : {}
-                  }
-                >
-                  {tag.name}
-                </button>
-              ))}
+              {tags.map((tag) => {
+                const isSelected = filters.tagIds.includes(tag.id);
+                return (
+                  <Button
+                    key={tag.id}
+                    onClick={() => handleTagToggle(tag.id)}
+                    variant={isSelected ? 'primary' : 'secondary'}
+                    size="sm"
+                    style={isSelected ? { '--primary': tag.color, '--primary-foreground': '#ffffff' } : {}}
+                  >
+                    {tag.name}
+                  </Button>
+                );
+              })}
             </div>
           </div>
         )}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { checkGPSSupport, requestLocation } from '@/lib/hardware-utils';
 import { calculateDistance, formatDistance } from '@/utils/location-utils';
+import Button from '@/components/ui/Button';
 
 export default function GPSCapture({ onCapture, onError, enableContinuousTracking = false }) {
   const [location, setLocation] = useState(null);
@@ -236,24 +237,29 @@ export default function GPSCapture({ onCapture, onError, enableContinuousTrackin
         </div>
       ) : (
         <div>
-          <button
+          <Button
             type="button"
             onClick={getLocation}
             disabled={loading}
-            className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+            variant="primary"
+            size="sm"
+            fullWidth
           >
             {loading ? 'Getting Location...' : 'Get Current Location'}
-          </button>
+          </Button>
 
           {/* Continuous tracking option (if enabled and supported) */}
           {enableContinuousTracking && !loading && (
-            <button
+            <Button
               type="button"
               onClick={startTracking}
-              className="w-full mt-2 bg-purple-900 text-white py-2 px-4 rounded-md hover:bg-purple-800 transition-colors duration-200 text-sm"
+              variant="primary"
+              size="sm"
+              fullWidth
+              className="mt-2"
             >
               Start Continuous Tracking
-            </button>
+            </Button>
           )}
 
           {error && (

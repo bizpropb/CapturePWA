@@ -16,6 +16,7 @@
 import { useState, useEffect } from 'react';
 import { useClipboard } from '@/hooks/useClipboard';
 import { getClipboardCapabilities } from '@/lib/clipboard-utils';
+import Button from '@/components/ui/Button';
 
 export default function ClipboardDemo() {
   const { copyText, copyImage, readText, readImage, copied, loading, error, capabilities } = useClipboard();
@@ -92,7 +93,7 @@ export default function ClipboardDemo() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
+      <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
         <h3 className="text-xl font-semibold text-white mb-2">📋 Clipboard API Demo</h3>
         <p className="text-sm text-gray-400">
           Test clipboard operations: copy and read text/images
@@ -101,7 +102,7 @@ export default function ClipboardDemo() {
 
       {/* Capabilities */}
       {detailedCaps && (
-        <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+        <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
           <h4 className="text-sm font-semibold text-white mb-3">Browser Capabilities</h4>
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
@@ -133,35 +134,36 @@ export default function ClipboardDemo() {
       )}
 
       {/* Copy Text */}
-      <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+      <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
         <h4 className="text-sm font-semibold text-white mb-3">📝 Copy Text</h4>
         <div className="space-y-3">
           <textarea
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter text to copy..."
           />
-          <button
+          <Button
             onClick={handleCopyText}
             disabled={loading || !textInput}
-            className="w-full bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="secondary"
+            fullWidth
           >
             {copied ? '✓ Copied!' : 'Copy Text to Clipboard'}
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Copy Image */}
-      <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+      <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
         <h4 className="text-sm font-semibold text-white mb-3">🖼️ Copy Image</h4>
         <div className="space-y-3">
           <input
             type="file"
             accept="image/*"
             onChange={handleImageSelect}
-            className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-white hover:file:bg-blue-800 file:cursor-pointer"
+            className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-normal file:bg-blue-900 file:text-white hover:file:bg-blue-800 file:cursor-pointer"
           />
           {imagePreview && (
             <div className="w-full h-32 bg-gray-700 rounded-md overflow-hidden">
@@ -172,13 +174,14 @@ export default function ClipboardDemo() {
               />
             </div>
           )}
-          <button
+          <Button
             onClick={handleCopyImage}
             disabled={loading || !imagePreview || !detailedCaps?.supportsImages}
-            className="w-full bg-purple-900 text-white py-2 px-4 rounded hover:bg-purple-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="secondary"
+            fullWidth
           >
             {copied ? '✓ Image Copied!' : 'Copy Image to Clipboard'}
-          </button>
+          </Button>
           {!detailedCaps?.supportsImages && (
             <p className="text-xs text-yellow-400">
               ⚠️ Image clipboard not supported in your browser
@@ -188,16 +191,17 @@ export default function ClipboardDemo() {
       </div>
 
       {/* Read Text */}
-      <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+      <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
         <h4 className="text-sm font-semibold text-white mb-3">📖 Read Clipboard Text</h4>
         <div className="space-y-3">
-          <button
+          <Button
             onClick={handleReadText}
             disabled={loading || !detailedCaps?.readSupported}
-            className="w-full bg-green-900 text-white py-2 px-4 rounded hover:bg-green-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="secondary"
+            fullWidth
           >
             Read Text from Clipboard
-          </button>
+          </Button>
           {readTextResult && (
             <div className="p-3 bg-gray-700 rounded-md">
               <p className="text-sm text-gray-300 whitespace-pre-wrap">{readTextResult}</p>
@@ -212,16 +216,17 @@ export default function ClipboardDemo() {
       </div>
 
       {/* Read Image */}
-      <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+      <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
         <h4 className="text-sm font-semibold text-white mb-3">🖼️ Read Clipboard Image</h4>
         <div className="space-y-3">
-          <button
+          <Button
             onClick={handleReadImage}
             disabled={loading || !detailedCaps?.readSupported}
-            className="w-full bg-indigo-900 text-white py-2 px-4 rounded hover:bg-indigo-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="secondary"
+            fullWidth
           >
             Read Image from Clipboard
-          </button>
+          </Button>
           {readImageResult && (
             <div className="w-full h-48 bg-gray-700 rounded-md overflow-hidden">
               <img
