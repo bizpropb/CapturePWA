@@ -81,7 +81,7 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
   return (
     <>
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-40 overflow-x-hidden" data-nav-collapsed={isCollapsed}>
+      <nav suppressHydrationWarning className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-40 overflow-x-hidden" data-nav-collapsed={isCollapsed}>
         <div className="flex justify-around items-center h-16 overflow-x-hidden">
           {navItems.map((item) => (
             <Link
@@ -102,6 +102,7 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
 
       {/* Desktop Sidebar Navigation */}
       <nav
+        suppressHydrationWarning
         className={`hidden md:flex fixed left-0 top-0 bottom-0 bg-gray-800 border-r border-gray-700 flex-col z-40 transition-all duration-300 overflow-x-hidden ${
           isCollapsed ? 'w-20' : 'w-64'
         }`}
@@ -110,7 +111,7 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
         <div className={`p-6 border-b border-gray-700 flex items-center overflow-x-hidden ${
           isCollapsed ? 'justify-center' : 'justify-between'
         }`}>
-          <div className={`transition-opacity duration-300 overflow-hidden ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
+          <div suppressHydrationWarning className={`transition-opacity duration-300 overflow-hidden ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
             <h1 className="text-2xl font-bold text-white whitespace-nowrap">CapturePWA</h1>
             <p className="text-sm text-gray-400 mt-1 whitespace-nowrap">Save Your Moments</p>
           </div>
@@ -164,6 +165,7 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
             >
               <span className={isCollapsed ? '' : 'mr-3'}>{item.icon}</span>
               <span
+                suppressHydrationWarning
                 className={`font-medium transition-all duration-300 ${
                   isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
                 }`}
@@ -182,7 +184,7 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
         </div>
 
         {/* Footer Info */}
-        <div className={`p-6 border-t border-gray-700 text-sm text-gray-400 transition-all duration-300 overflow-x-hidden ${
+        <div suppressHydrationWarning className={`p-6 border-t border-gray-700 text-sm text-gray-400 transition-all duration-300 overflow-x-hidden ${
           isCollapsed ? 'text-center' : ''
         }`}>
           {isCollapsed ? (

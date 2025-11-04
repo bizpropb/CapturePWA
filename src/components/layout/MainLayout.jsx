@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Navigation from './Navigation';
 // import InstallPrompt from './InstallPrompt';
 
@@ -11,15 +11,14 @@ import Navigation from './Navigation';
  */
 
 export default function MainLayout({ children }) {
-  const [isNavCollapsed, setIsNavCollapsed] = useState(false);
-
-  // Load collapsed state from localStorage on mount
-  useEffect(() => {
-    const savedState = localStorage.getItem('navCollapsed');
-    if (savedState !== null) {
-      setIsNavCollapsed(savedState === 'true');
+  // Initialize directly from localStorage with collapsed as default
+  const [isNavCollapsed, setIsNavCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedState = localStorage.getItem('navCollapsed');
+      return savedState !== null ? savedState === 'true' : true; // default to collapsed
     }
-  }, []);
+    return true; // SSR default: collapsed
+  });
 
   // Save collapsed state to localStorage when it changes
   const handleSetCollapsed = (collapsed) => {
@@ -29,10 +28,13 @@ export default function MainLayout({ children }) {
 
   return (
     <>
-      <Navigation isCollapsed={isNavCollapsed} setIsCollapsed={handleSetCollapsed} />
+      <Navigation
+        isCollapsed={isNavCollapsed}
+        setIsCollapsed={handleSetCollapsed}
+      />
 
       {/* Main Content Area */}
-      <main className={`min-h-screen pb-16 md:pb-0 transition-all duration-300 page-enter ${
+      <main suppressHydrationWarning className={`min-h-screen pb-16 md:pb-0 transition-all duration-300 page-enter ${
         isNavCollapsed ? 'md:ml-20' : 'md:ml-64'
       }`}>
         {children}
