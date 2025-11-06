@@ -83,7 +83,7 @@ export default function ShareButton({ moment, onShareSuccess, className = '' }) 
     setIsSharing(true);
 
     try {
-      const shareData = getShareData();
+      const shareData = await getShareData();
 
       // If there's an image, try to share it too
       if (moment.imageUrl && navigator.canShare) {
@@ -163,7 +163,7 @@ export default function ShareButton({ moment, onShareSuccess, className = '' }) 
 
       {/* Success indicator */}
       {showCopied && (
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm py-1 px-3 rounded shadow-lg whitespace-nowrap">
+        <div className="absolute -top-10 left-0 bg-gray-900 text-white text-sm py-1 px-3 rounded shadow-lg whitespace-nowrap">
           Link copied to clipboard!
         </div>
       )}
