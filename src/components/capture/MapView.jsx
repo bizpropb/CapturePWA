@@ -30,7 +30,7 @@ export default function MapView({
 
   useEffect(() => {
     // Only run on client side
-    if (typeof window === 'undefined' || !mapRef.current || mapInstanceRef.current) {
+    if (typeof window === 'undefined' || !mapRef.current) {
       return;
     }
 
@@ -57,6 +57,18 @@ export default function MapView({
           iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
           shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
         });
+
+        // Check if map is already initialized and remove it
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
+        }
+
+        // Check if the container has a Leaflet instance
+        if (mapRef.current._leaflet_id) {
+          // Container already initialized, clear it
+          mapRef.current._leaflet_id = undefined;
+        }
 
         // Initialize map
         const map = L.map(mapRef.current).setView([lat, lng], zoom);
