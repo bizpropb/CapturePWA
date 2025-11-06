@@ -13,6 +13,7 @@ export default function Modal({
   title,
   children,
   size = 'md',
+  maxWidth = null,
   className = '',
 }) {
   useEffect(() => {
@@ -26,6 +27,18 @@ export default function Modal({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const sizes = {
@@ -35,15 +48,22 @@ export default function Modal({
     xl: 'max-w-4xl',
   };
 
+  const widthClass = maxWidth ? '' : sizes[size];
+  const customMaxWidth = maxWidth ? { maxWidth } : {};
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 animate-fadeIn">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-start justify-center p-2 sm:p-4 z-50 animate-fadeIn overflow-y-auto"
+      onClick={onClose}
+    >
       <div
-        className={`bg-gray-800 rounded-lg shadow-xl w-full ${sizes[size]} ${className} animate-slideUp`}
+        className={`bg-gray-800 rounded-lg shadow-xl w-full ${widthClass} ${className} animate-slideUp my-4 sm:my-8 mx-2 sm:mx-4 max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)] flex flex-col`}
+        style={customMaxWidth}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700 flex-shrink-0">
             <h2 className="text-xl font-bold text-white">{title}</h2>
             <button
               onClick={onClose}
@@ -58,7 +78,7 @@ export default function Modal({
         )}
 
         {/* Content */}
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 overflow-y-auto">
           {children}
         </div>
       </div>

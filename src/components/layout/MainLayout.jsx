@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Navigation from './Navigation';
+import CaptureModal from '@/components/capture/CaptureModal';
 // import InstallPrompt from './InstallPrompt';
 
 /**
@@ -20,6 +21,7 @@ const getInitialCollapsedState = () => {
 export default function MainLayout({ children }) {
   // Initialize with localStorage value (or default to collapsed)
   const [isNavCollapsed, setIsNavCollapsed] = useState(getInitialCollapsedState);
+  const [isCaptureModalOpen, setIsCaptureModalOpen] = useState(false);
 
   // Save to localStorage when state changes
   const handleSetCollapsed = (collapsed) => {
@@ -32,6 +34,12 @@ export default function MainLayout({ children }) {
       <Navigation
         isCollapsed={isNavCollapsed}
         setIsCollapsed={handleSetCollapsed}
+        onCaptureClick={() => setIsCaptureModalOpen(true)}
+      />
+
+      <CaptureModal
+        isOpen={isCaptureModalOpen}
+        onClose={() => setIsCaptureModalOpen(false)}
       />
 
       {/* Main Content Area */}

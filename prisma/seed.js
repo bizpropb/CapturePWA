@@ -249,13 +249,12 @@ async function main() {
       },
     }, 4);
 
-    // 6. Beach sunset - Los Angeles (WITH IMAGE + VIDEO)
+    // 6. Beach sunset - Los Angeles (WITH IMAGE)
     await createMomentWithDate({
       description: 'Beach sunset with friends. Living for these golden hour moments! 🌊✨',
       mood: 'relaxed',
       weather: 'sunny',
       imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
-      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', // sample video URL
       gpsLat: 34.0522,
       gpsLng: -118.2437,
       gpsAccuracy: 30.0,

@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
  * Desktop: Sidebar navigation with collapsible feature
  */
 
-export default function Navigation({ isCollapsed, setIsCollapsed }) {
+export default function Navigation({ isCollapsed, setIsCollapsed, onCaptureClick }) {
   const pathname = usePathname();
 
   const navItems = [
@@ -34,7 +34,8 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
     },
     {
       name: 'Capture',
-      href: '/capture',
+      href: null, // Modal trigger, not a link
+      isButton: true,
       icon: (
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -83,20 +84,34 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
       {/* Mobile Bottom Navigation */}
       <nav suppressHydrationWarning className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-40 overflow-x-hidden" data-nav-collapsed={isCollapsed}>
         <div className="flex justify-around items-center h-16 overflow-x-hidden">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center justify-center flex-1 h-full transition-colors duration-200 ${
-                isActive(item.href)
-                  ? 'text-blue-400'
-                  : 'text-gray-400 hover:text-gray-200'
-              }`}
-            >
-              {item.icon}
-              <span className="text-xs mt-1">{item.name}</span>
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            if (item.isButton) {
+              return (
+                <button
+                  key={item.name}
+                  onClick={onCaptureClick}
+                  className="flex flex-col items-center justify-center flex-1 h-full transition-colors duration-200 text-gray-400 hover:text-gray-200"
+                >
+                  {item.icon}
+                  <span className="text-xs mt-1">{item.name}</span>
+                </button>
+              );
+            }
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center justify-center flex-1 h-full transition-colors duration-200 ${
+                  isActive(item.href)
+                    ? 'text-blue-400'
+                    : 'text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                {item.icon}
+                <span className="text-xs mt-1">{item.name}</span>
+              </Link>
+            );
+          })}
         </div>
       </nav>
 
@@ -152,35 +167,64 @@ export default function Navigation({ isCollapsed, setIsCollapsed }) {
 
         {/* Navigation Links */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden py-4">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center overflow-x-hidden ${isCollapsed ? 'justify-center px-6' : 'px-6'} py-3 transition-all duration-200 group relative ${
-                isActive(item.href)
-                  ? 'bg-blue-600 text-white border-r-4 border-blue-400'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              }`}
-              title={isCollapsed ? item.name : ''}
-            >
-              <span className={isCollapsed ? '' : 'mr-3'}>{item.icon}</span>
-              <span
-                suppressHydrationWarning
-                className={`font-medium transition-all duration-300 ${
-                  isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
-                }`}
-              >
-                {item.name}
-              </span>
+          {navItems.map((item) => {
+            if (item.isButton) {
+              return (
+                <button
+                  key={item.name}
+                  onClick={onCaptureClick}
+                  className={`flex items-center overflow-x-hidden ${isCollapsed ? 'justify-center px-6' : 'px-6'} py-3 transition-all duration-200 group relative text-gray-300 hover:bg-gray-700 hover:text-white w-full`}
+                  title={isCollapsed ? item.name : ''}
+                >
+                  <span className={isCollapsed ? '' : 'mr-3'}>{item.icon}</span>
+                  <span
+                    suppressHydrationWarning
+                    className={`font-medium transition-all duration-300 ${
+                      isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+                    }`}
+                  >
+                    {item.name}
+                  </span>
 
-              {/* Tooltip for collapsed state */}
-              {isCollapsed && (
-                <span className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                  {/* Tooltip for collapsed state */}
+                  {isCollapsed && (
+                    <span className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                      {item.name}
+                    </span>
+                  )}
+                </button>
+              );
+            }
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center overflow-x-hidden ${isCollapsed ? 'justify-center px-6' : 'px-6'} py-3 transition-all duration-200 group relative ${
+                  isActive(item.href)
+                    ? 'bg-blue-600 text-white border-r-4 border-blue-400'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                }`}
+                title={isCollapsed ? item.name : ''}
+              >
+                <span className={isCollapsed ? '' : 'mr-3'}>{item.icon}</span>
+                <span
+                  suppressHydrationWarning
+                  className={`font-medium transition-all duration-300 ${
+                    isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+                  }`}
+                >
                   {item.name}
                 </span>
-              )}
-            </Link>
-          ))}
+
+                {/* Tooltip for collapsed state */}
+                {isCollapsed && (
+                  <span className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                    {item.name}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Footer Info */}
