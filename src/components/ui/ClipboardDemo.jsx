@@ -19,7 +19,17 @@ import { getClipboardCapabilities } from '@/lib/clipboard-utils';
 import Button from '@/components/ui/Button';
 
 export default function ClipboardDemo() {
-  const { copyText, copyImage, readText, readImage, copied, loading, error, capabilities } = useClipboard();
+  const { 
+    copyText, 
+    copyImage, 
+    readText, 
+    readImage, 
+    copiedText, 
+    copiedImage, 
+    loading, 
+    error, 
+    capabilities 
+  } = useClipboard();
   const [textInput, setTextInput] = useState('Hello from CapturePWA! 👋');
   const [imagePreview, setImagePreview] = useState(null);
   const [readTextResult, setReadTextResult] = useState('');
@@ -150,7 +160,7 @@ export default function ClipboardDemo() {
             variant="secondary"
             fullWidth
           >
-            {copied ? '✓ Copied!' : 'Copy Text to Clipboard'}
+            {copiedText ? '✓ Text Copied!' : 'Copy Text to Clipboard'}
           </Button>
         </div>
       </div>
@@ -180,7 +190,7 @@ export default function ClipboardDemo() {
             variant="secondary"
             fullWidth
           >
-            {copied ? '✓ Image Copied!' : 'Copy Image to Clipboard'}
+            {copiedImage ? '✓ Image Copied!' : 'Copy Image to Clipboard'}
           </Button>
           {!detailedCaps?.supportsImages && (
             <p className="text-xs text-yellow-400">

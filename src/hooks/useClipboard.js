@@ -33,21 +33,30 @@ import {
  * @returns {Object} Clipboard methods and state
  */
 export function useClipboard({ resetDelay = 2000 } = {}) {
-  const [copied, setCopied] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
+  const [copiedImage, setCopiedImage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [capabilities, setCapabilities] = useState(null);
 
-  // Reset copied state after delay
+  // Reset copied states after delay
   useEffect(() => {
-    if (copied) {
+    if (copiedText) {
       const timer = setTimeout(() => {
-        setCopied(false);
+        setCopiedText(false);
       }, resetDelay);
-
       return () => clearTimeout(timer);
     }
-  }, [copied, resetDelay]);
+  }, [copiedText, resetDelay]);
+
+  useEffect(() => {
+    if (copiedImage) {
+      const timer = setTimeout(() => {
+        setCopiedImage(false);
+      }, resetDelay);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedImage, resetDelay]);
 
   // Load capabilities on mount
   useEffect(() => {
@@ -65,7 +74,7 @@ export function useClipboard({ resetDelay = 2000 } = {}) {
     const result = await copyTextUtil(text);
 
     if (result.success) {
-      setCopied(true);
+      setCopiedText(true);
     } else {
       setError(result.error || 'Failed to copy text');
     }
@@ -85,7 +94,7 @@ export function useClipboard({ resetDelay = 2000 } = {}) {
     const result = await copyImageUtil(image);
 
     if (result.success) {
-      setCopied(true);
+      setCopiedImage(true);
     } else {
       setError(result.error || 'Failed to copy image');
     }
@@ -146,7 +155,9 @@ export function useClipboard({ resetDelay = 2000 } = {}) {
     reset,
 
     // State
-    copied,
+    copied: copiedText || copiedImage, // For backward compatibility
+    copiedText,
+    copiedImage,
     loading,
     error,
     isSupported: isClipboardSupported(),
