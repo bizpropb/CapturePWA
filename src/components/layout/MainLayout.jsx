@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Navigation from './Navigation';
 // import InstallPrompt from './InstallPrompt';
 
@@ -10,19 +10,18 @@ import Navigation from './Navigation';
  * Handles spacing for mobile bottom nav and desktop sidebar
  */
 
+// Get initial state from localStorage (client-side only, synchronous)
+const getInitialCollapsedState = () => {
+  if (typeof window === 'undefined') return true; // SSR default
+  const saved = localStorage.getItem('navCollapsed');
+  return saved === null ? true : saved === 'true'; // Default to true (collapsed) if never set
+};
+
 export default function MainLayout({ children }) {
-  // Always start with true (collapsed) for SSR, then hydrate from localStorage
-  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  // Initialize with localStorage value (or default to collapsed)
+  const [isNavCollapsed, setIsNavCollapsed] = useState(getInitialCollapsedState);
 
-  // Hydrate from localStorage after mount (client-side only)
-  useEffect(() => {
-    const savedState = localStorage.getItem('navCollapsed');
-    if (savedState !== null) {
-      setIsNavCollapsed(savedState === 'true');
-    }
-  }, []);
-
-  // Save collapsed state to localStorage when it changes
+  // Save to localStorage when state changes
   const handleSetCollapsed = (collapsed) => {
     setIsNavCollapsed(collapsed);
     localStorage.setItem('navCollapsed', collapsed.toString());
