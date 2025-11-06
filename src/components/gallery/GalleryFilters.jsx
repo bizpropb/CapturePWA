@@ -181,15 +181,17 @@ export default function GalleryFilters({ filters, onFilterChange }) {
             </label>
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
-                <Button
+                <button
                   key={category.id}
                   onClick={() => handleCategoryChange(category.id)}
-                  variant={filters.categoryId === category.id ? 'primary' : 'secondary'}
-                  size="sm"
-                  className="whitespace-nowrap"
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                    filters.categoryId === category.id
+                      ? 'bg-purple-600 text-white hover:bg-purple-700'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
                 >
                   {category.icon} {category.name}
-                </Button>
+                </button>
               ))}
             </div>
           </div>
@@ -205,15 +207,17 @@ export default function GalleryFilters({ filters, onFilterChange }) {
               {tags.map((tag) => {
                 const isSelected = filters.tagIds.includes(tag.id);
                 return (
-                  <Button
+                  <button
                     key={tag.id}
                     onClick={() => handleTagToggle(tag.id)}
-                    variant={isSelected ? 'primary' : 'secondary'}
-                    size="sm"
-                    style={isSelected ? { '--primary': tag.color, '--primary-foreground': '#ffffff' } : {}}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      isSelected
+                        ? 'bg-green-600 text-white hover:bg-green-700'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    }`}
                   >
-                    {tag.name}
-                  </Button>
+                    #{tag.name}
+                  </button>
                 );
               })}
             </div>
