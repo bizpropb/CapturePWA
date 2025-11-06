@@ -107,28 +107,28 @@ export default function TimelineItem({ moment, isLast, onEdit, onDelete }) {
             {moment.description}
           </p>
 
-          {/* Metadata Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          {/* Metadata Flex */}
+          <div className="flex flex-wrap gap-3 text-sm">
             {/* Mood */}
             {moment.mood && (
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400">Mood:</span>
+              <div className="bg-gray-700/50 px-3 py-1.5 rounded-full">
+                <span className="text-gray-400">Mood: </span>
                 <span className="text-gray-200">{moment.mood}</span>
               </div>
             )}
 
             {/* Weather */}
             {moment.weather && (
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400">Weather:</span>
+              <div className="bg-gray-700/50 px-3 py-1.5 rounded-full">
+                <span className="text-gray-400">Weather: </span>
                 <span className="text-gray-200">{moment.weather}</span>
               </div>
             )}
 
             {/* Category */}
             {moment.category && (
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400">Category:</span>
+              <div className="bg-gray-700/50 px-3 py-1.5 rounded-full">
+                <span className="text-gray-400">Category: </span>
                 <span className="text-gray-200">
                   {moment.category.icon} {moment.category.name}
                 </span>
@@ -137,8 +137,8 @@ export default function TimelineItem({ moment, isLast, onEdit, onDelete }) {
 
             {/* View Count */}
             {moment.viewCount > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400">Views:</span>
+              <div className="bg-gray-700/50 px-3 py-1.5 rounded-full">
+                <span className="text-gray-400">Views: </span>
                 <span className="text-gray-200">{moment.viewCount}</span>
               </div>
             )}

@@ -8,7 +8,7 @@ import { getTimelineMoments } from '@/lib/timeline-api';
  * Query params:
  * - page: number (default: 1)
  * - limit: number (default: 20)
- * - searchQuery: string (search descriptions/tags)
+ * - searchQuery: string (search descriptions/locations/tags)
  * - tagIds: JSON array of tag IDs
  * - categoryId: number
  * - mood: string

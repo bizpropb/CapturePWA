@@ -8,7 +8,7 @@ import { getTimelineMoments } from '@/lib/timeline-api';
  * Server-side rendered timeline with:
  * - Chronological moment display
  * - Date grouping (Today, Yesterday, Last Week, etc.)
- * - Search functionality (descriptions/tags)
+ * - Search functionality (descriptions/locations/tags)
  * - Filter sidebar (tags, categories, mood)
  * - Infinite scroll
  * - Mini-maps for GPS locations

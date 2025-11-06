@@ -50,7 +50,7 @@ export default function TimelineSearch({
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Search moments, tags..."
+          placeholder="Search descriptions, locations..."
           className="w-full pl-10 pr-10 py-3 bg-gray-800 text-gray-200 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         {inputValue && (

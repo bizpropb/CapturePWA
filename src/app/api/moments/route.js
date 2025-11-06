@@ -80,7 +80,13 @@ export async function POST(request) {
       }
     });
 
-    return NextResponse.json(moment, { status: 201 });
+    // Format tags to flatten the nested structure
+    const formattedMoment = {
+      ...moment,
+      tags: moment.tags.map(mt => mt.tag),
+    };
+
+    return NextResponse.json(formattedMoment, { status: 201 });
   } catch (error) {
     console.error('Error creating moment:', error);
     return NextResponse.json(

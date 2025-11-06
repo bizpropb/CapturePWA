@@ -9,7 +9,7 @@ import { prisma } from '@/lib/prisma';
  * @param {Object} options - Query options
  * @param {number} options.page - Page number (default: 1)
  * @param {number} options.limit - Items per page (default: 20)
- * @param {string} options.searchQuery - Search term for descriptions/tags
+ * @param {string} options.searchQuery - Search term for descriptions/locations/tags
  * @param {Object} options.filters - Filter options
  * @param {number[]} options.filters.tagIds - Filter by tag IDs
  * @param {number} options.filters.categoryId - Filter by category ID
@@ -26,21 +26,26 @@ export async function getTimelineMoments({
     // Build where clause
     const where = {};
 
-    // Search functionality (description or tag names)
+    // Search functionality (description, location name, or tag names)
     if (searchQuery) {
       where.OR = [
         {
           description: {
             contains: searchQuery,
-            mode: 'insensitive',
+          },
+        },
+        {
+          locationName: {
+            contains: searchQuery,
           },
         },
         {
           tags: {
             some: {
-              name: {
-                contains: searchQuery,
-                mode: 'insensitive',
+              tag: {
+                name: {
+                  contains: searchQuery,
+                },
               },
             },
           },
@@ -62,7 +67,7 @@ export async function getTimelineMoments({
     if (filters.tagIds && filters.tagIds.length > 0) {
       where.tags = {
         some: {
-          id: { in: filters.tagIds },
+          tagId: { in: filters.tagIds },
         },
       };
     }
@@ -84,18 +89,28 @@ export async function getTimelineMoments({
               name: true,
             },
           },
-          tags: true,
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
           category: true,
         },
       }),
       prisma.moment.count({ where }),
     ]);
 
+    // Format tags to flatten the nested structure
+    const formattedMoments = moments.map(moment => ({
+      ...moment,
+      tags: moment.tags.map(mt => mt.tag),
+    }));
+
     const totalPages = Math.ceil(totalCount / limit);
     const hasMore = page < totalPages;
 
     return {
-      moments,
+      moments: formattedMoments,
       pagination: {
         page,
         limit,

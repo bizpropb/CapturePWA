@@ -65,7 +65,7 @@ export async function getAllMomentsWithMedia({
     if (tagIds.length > 0) {
       where.tags = {
         some: {
-          id: { in: tagIds },
+          tagId: { in: tagIds },
         },
       };
     }
@@ -95,18 +95,28 @@ export async function getAllMomentsWithMedia({
               name: true,
             },
           },
-          tags: true,
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
           category: true,
         },
       }),
       prisma.moment.count({ where }),
     ]);
 
+    // Format tags to flatten the nested structure
+    const formattedMoments = moments.map(moment => ({
+      ...moment,
+      tags: moment.tags.map(mt => mt.tag),
+    }));
+
     const totalPages = Math.ceil(totalCount / limit);
     const hasMore = page < totalPages;
 
     return {
-      moments,
+      moments: formattedMoments,
       pagination: {
         page,
         limit,

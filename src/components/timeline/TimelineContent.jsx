@@ -30,10 +30,10 @@ export default function TimelineContent({ initialData }) {
 
   // Fetch moments when search or filters change
   useEffect(() => {
-    if (searchQuery || filters.tagIds.length > 0 || filters.categoryId || filters.mood) {
-      fetchMoments(1, true);
-    }
-  }, [searchQuery, filters]);
+    // Always fetch when search or filters change (including when search is cleared)
+    fetchMoments(1, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, filters.tagIds.join(','), filters.categoryId, filters.mood]);
 
   /**
    * Fetch moments from API
@@ -191,19 +191,6 @@ export default function TimelineContent({ initialData }) {
             showFilters={showFilters}
           />
         </div>
-
-        {/* Active Filters Indicator */}
-        {hasActiveFilters && (
-          <div className="mb-4 flex items-center gap-2 text-sm text-gray-400">
-            <span>Filters active</span>
-            <button
-              onClick={resetAll}
-              className="text-blue-400 hover:text-blue-300 underline"
-            >
-              Clear all
-            </button>
-          </div>
-        )}
 
         {/* Timeline Groups */}
         {moments.length === 0 && !loading ? (
