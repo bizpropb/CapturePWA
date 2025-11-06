@@ -12,6 +12,7 @@ import CategorySelector from './CategorySelector';
 import TagSelector from './TagSelector';
 import WeatherFetcher from './WeatherFetcher';
 import { usePasteListener } from '@/hooks/useClipboard';
+import Button from '@/components/ui/Button';
 
 export default function MomentForm({ onMomentCreated, sharedData }) {
   const [description, setDescription] = useState('');
@@ -247,19 +248,14 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
       <form onSubmit={handleSubmit}>
         {/* Description */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-300">
-              Description *
-            </label>
-            <span className="text-xs text-gray-400">
-              💡 Tip: You can paste text or images (Ctrl+V / Cmd+V)
-            </span>
-          </div>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
+            Description *
+          </label>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What's on your mind? (You can also paste text here)"
+            placeholder="What's on your mind? (You can also paste text or images here)"
             rows={4}
             className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
@@ -431,13 +427,14 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
 
         {/* Submit Button */}
         <div className="flex justify-end">
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            size="md"
             disabled={loading}
-            className="bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
           >
             {loading ? 'Creating...' : 'Create Moment'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

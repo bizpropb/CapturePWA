@@ -503,7 +503,7 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
             <button
               type="button"
               onClick={trimAudio}
-              className="flex-1 bg-green-800 text-white py-2 px-4 rounded-md hover:bg-green-900 text-sm font-medium"
+              className="bg-green-800 text-white py-2 px-4 rounded-md hover:bg-green-900 text-sm font-medium"
             >
               Apply Trim
             </button>
@@ -514,7 +514,7 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
                 setTrimStart(0);
                 setTrimEnd(100);
               }}
-              className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 text-sm"
+              className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 text-sm"
             >
               Cancel
             </button>
@@ -556,13 +556,13 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
           {/* Playback speed control */}
           <div className="mb-3">
             <label className="text-xs text-gray-400 mb-2 block">Playback Speed</label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {[0.5, 0.75, 1.0, 1.25, 1.5, 2.0].map((rate) => (
                 <button
                   key={rate}
                   type="button"
                   onClick={() => handlePlaybackRateChange(rate)}
-                  className={`flex-1 py-1 px-2 rounded text-xs transition-colors duration-200 ${
+                  className={`py-1 px-3 rounded text-xs transition-colors duration-200 ${
                     playbackRate === rate
                       ? 'bg-blue-900 text-white'
                       : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
@@ -586,7 +586,7 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
           <button
             type="button"
             onClick={() => setIsTrimming(true)}
-            className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200 text-sm"
+            className="bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200 text-sm"
           >
             ✂️ Trim Audio
           </button>
@@ -632,7 +632,7 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
           <button
             type="button"
             onClick={stopRecording}
-            className="w-full bg-red-950 text-white py-2 px-4 rounded-md hover:bg-red-900 transition-colors duration-200"
+            className="bg-red-950 text-white py-2 px-4 rounded-md hover:bg-red-900 transition-colors duration-200"
           >
             ⏹ Stop Recording
           </button>
@@ -644,27 +644,14 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
   // Initial view
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-2 gap-2">
-        <Button
-          type="button"
-          onClick={() => startRecording(false)}
-          variant="primary"
-          size="sm"
-        >
-          🎙️ Start Recording
-        </Button>
-
-        {transcriptSupported && (
-          <Button
-            type="button"
-            onClick={() => startRecording(true)}
-            variant="primary"
-            size="sm"
-          >
-            🎤 Record with Transcription
-          </Button>
-        )}
-      </div>
+      <Button
+        type="button"
+        onClick={() => startRecording(false)}
+        variant="primary"
+        size="sm"
+      >
+        🎙️ Start Recording
+      </Button>
 
       {error && (
         <p className="text-sm text-red-400">{error}</p>

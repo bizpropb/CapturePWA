@@ -219,7 +219,7 @@ export default function GPSCapture({ onCapture, onError, enableContinuousTrackin
                 <button
                   type="button"
                   onClick={stopTracking}
-                  className="w-full bg-red-900 text-white py-2 px-4 rounded-md hover:bg-red-800 transition-colors duration-200 text-sm"
+                  className="bg-red-900 text-white py-2 px-4 rounded-md hover:bg-red-800 transition-colors duration-200 text-sm"
                 >
                   Stop Tracking
                 </button>
@@ -227,7 +227,7 @@ export default function GPSCapture({ onCapture, onError, enableContinuousTrackin
                 <button
                   type="button"
                   onClick={startTracking}
-                  className="w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200 text-sm"
+                  className="bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200 text-sm"
                 >
                   Start Continuous Tracking
                 </button>
@@ -243,7 +243,6 @@ export default function GPSCapture({ onCapture, onError, enableContinuousTrackin
             disabled={loading}
             variant="primary"
             size="sm"
-            fullWidth
           >
             {loading ? 'Getting Location...' : 'Get Current Location'}
           </Button>
@@ -255,7 +254,6 @@ export default function GPSCapture({ onCapture, onError, enableContinuousTrackin
               onClick={startTracking}
               variant="primary"
               size="sm"
-              fullWidth
               className="mt-2"
             >
               Start Continuous Tracking

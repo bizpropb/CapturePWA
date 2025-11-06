@@ -12,9 +12,9 @@ export default function TagSelector({ value = [], onChange, disabled = false }) 
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [newTagName, setNewTagName] = useState('');
-  const [creating, setCreating] = useState(false);
-  const [showInput, setShowInput] = useState(false);
+  // const [newTagName, setNewTagName] = useState('');
+  // const [creating, setCreating] = useState(false);
+  // const [showInput, setShowInput] = useState(false);
 
   // Fetch tags on mount
   useEffect(() => {
@@ -49,50 +49,51 @@ export default function TagSelector({ value = [], onChange, disabled = false }) 
     }
   };
 
-  const handleCreateTag = async (e) => {
-    e.preventDefault();
+  // COMMENTED OUT: Create new tag functionality (doesn't work, not needed)
+  // const handleCreateTag = async (e) => {
+  //   e.preventDefault();
 
-    if (!newTagName.trim()) {
-      return;
-    }
+  //   if (!newTagName.trim()) {
+  //     return;
+  //   }
 
-    setCreating(true);
-    setError('');
+  //   setCreating(true);
+  //   setError('');
 
-    try {
-      const response = await fetch('/api/tags', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: newTagName.trim(),
-        }),
-      });
+  //   try {
+  //     const response = await fetch('/api/tags', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         name: newTagName.trim(),
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to create tag');
-      }
+  //     if (!response.ok) {
+  //       const data = await response.json();
+  //       throw new Error(data.error || 'Failed to create tag');
+  //     }
 
-      const newTag = await response.json();
+  //     const newTag = await response.json();
 
-      // Add new tag to list
-      setTags([...tags, newTag]);
+  //     // Add new tag to list
+  //     setTags([...tags, newTag]);
 
-      // Automatically select the new tag
-      onChange([...value, newTag.id]);
+  //     // Automatically select the new tag
+  //     onChange([...value, newTag.id]);
 
-      // Reset input
-      setNewTagName('');
-      setShowInput(false);
-    } catch (err) {
-      console.error('Error creating tag:', err);
-      setError(err.message);
-    } finally {
-      setCreating(false);
-    }
-  };
+  //     // Reset input
+  //     setNewTagName('');
+  //     setShowInput(false);
+  //   } catch (err) {
+  //     console.error('Error creating tag:', err);
+  //     setError(err.message);
+  //   } finally {
+  //     setCreating(false);
+  //   }
+  // };
 
   if (loading) {
     return (
@@ -165,8 +166,8 @@ export default function TagSelector({ value = [], onChange, disabled = false }) 
         </div>
       )}
 
-      {/* Create New Tag */}
-      {!showInput ? (
+      {/* COMMENTED OUT: Create New Tag UI (doesn't work, not needed) */}
+      {/* {!showInput ? (
         <button
           type="button"
           onClick={() => setShowInput(true)}
@@ -206,7 +207,7 @@ export default function TagSelector({ value = [], onChange, disabled = false }) 
             Cancel
           </button>
         </form>
-      )}
+      )} */}
 
       {/* Error Message */}
       {error && (
