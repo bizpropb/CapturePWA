@@ -147,9 +147,9 @@ export default function TimelineItem({ moment, isLast, onEdit, onDelete }) {
           {/* Tags */}
           {moment.tags && moment.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
-              {moment.tags.map((tag) => (
+              {moment.tags.map((tag, index) => (
                 <span
-                  key={tag.id}
+                  key={`${moment.id}-tag-${tag.id}-${index}`}
                   className="text-xs px-3 py-1 rounded-full"
                   style={{
                     backgroundColor: `${tag.color}20`,

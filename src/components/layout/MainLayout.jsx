@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation from './Navigation';
 // import InstallPrompt from './InstallPrompt';
 
@@ -11,14 +11,16 @@ import Navigation from './Navigation';
  */
 
 export default function MainLayout({ children }) {
-  // Initialize directly from localStorage with collapsed as default
-  const [isNavCollapsed, setIsNavCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedState = localStorage.getItem('navCollapsed');
-      return savedState !== null ? savedState === 'true' : true; // default to collapsed
+  // Always start with true (collapsed) for SSR, then hydrate from localStorage
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+
+  // Hydrate from localStorage after mount (client-side only)
+  useEffect(() => {
+    const savedState = localStorage.getItem('navCollapsed');
+    if (savedState !== null) {
+      setIsNavCollapsed(savedState === 'true');
     }
-    return true; // SSR default: collapsed
-  });
+  }, []);
 
   // Save collapsed state to localStorage when it changes
   const handleSetCollapsed = (collapsed) => {
