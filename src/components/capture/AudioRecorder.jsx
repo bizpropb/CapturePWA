@@ -18,8 +18,8 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
   const [error, setError] = useState('');
   const [isSupported, setIsSupported] = useState(true);
 
-  // Visualization states
-  const [isVisualizing, setIsVisualizing] = useState(false);
+  /* // Visualization states
+  const [isVisualizing, setIsVisualizing] = useState(false); */
 
   // Voice-to-text states
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -43,10 +43,10 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
   const chunksRef = useRef([]);
   const streamRef = useRef(null);
   const timerRef = useRef(null);
-  const canvasRef = useRef(null);
+  /* const canvasRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
-  const animationFrameRef = useRef(null);
+  const animationFrameRef = useRef(null); */
   const audioElementRef = useRef(null);
   const recognitionRef = useRef(null);
 
@@ -74,20 +74,20 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
-      if (animationFrameRef.current) {
+      /* if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
       if (audioContextRef.current) {
         audioContextRef.current.close();
-      }
+      } */
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
     };
   }, []);
 
-  // Setup audio visualization
-  const setupVisualization = (stream) => {
+  /* // Setup audio visualization
+  const setupVisualization = async (stream) => {
     try {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
@@ -95,6 +95,8 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
 
       analyser.fftSize = 2048;
       source.connect(analyser);
+
+      await audioContext.resume();
 
       audioContextRef.current = audioContext;
       analyserRef.current = analyser;
@@ -121,6 +123,12 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
       if (!isRecording && !isVisualizing) return;
 
       animationFrameRef.current = requestAnimationFrame(draw);
+
+      // Dynamically resize canvas to match displayed size
+      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+      }
 
       analyser.getByteTimeDomainData(dataArray);
 
@@ -152,7 +160,7 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
     };
 
     draw();
-  };
+  }; */
 
   // Setup voice-to-text recognition
   const setupRecognition = () => {
@@ -231,7 +239,7 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
         stopMediaStream(streamRef.current);
         streamRef.current = null;
 
-        // Stop visualization
+        /* // Stop visualization
         setIsVisualizing(false);
         if (animationFrameRef.current) {
           cancelAnimationFrame(animationFrameRef.current);
@@ -239,7 +247,7 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
         if (audioContextRef.current) {
           audioContextRef.current.close();
           audioContextRef.current = null;
-        }
+        } */
 
         // Stop transcription
         if (recognitionRef.current) {
@@ -256,8 +264,8 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
         setDuration((prev) => prev + 1);
       }, 1000);
 
-      // Setup visualization
-      setupVisualization(stream);
+      /* // Setup visualization
+      await setupVisualization(stream); */
 
       // Setup voice-to-text if enabled
       if (enableTranscription && transcriptSupported) {
@@ -533,13 +541,15 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
             <span className="text-sm font-medium text-gray-300">
               Recorded Audio ({formatDuration(duration)})
             </span>
-            <button
+            <Button
               type="button"
               onClick={deleteRecording}
-              className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors duration-200"
+              variant="danger"
+              size="sm"
+              className="!p-0 !bg-transparent hover:!bg-transparent"
             >
               Delete
-            </button>
+            </Button>
           </div>
 
           {/* Audio player */}
@@ -583,13 +593,14 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
           )}
 
           {/* Actions */}
-          <button
+          <Button
             type="button"
             onClick={() => setIsTrimming(true)}
-            className="bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition-colors duration-200 text-sm"
+            variant="primary"
+            size="sm"
           >
             ✂️ Trim Audio
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -612,15 +623,13 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
             )}
           </div>
 
-          {/* Waveform visualization */}
+          {/* // Waveform visualization 
           {isVisualizing && (
             <canvas
               ref={canvasRef}
-              width="600"
-              height="100"
               className="w-full h-24 mb-3 rounded bg-slate-900"
             />
-          )}
+          )} */}
 
           {/* Live transcript */}
           {isTranscribing && transcript && (
@@ -629,13 +638,14 @@ export default function AudioRecorder({ onCapture, onError, onTranscript }) {
             </div>
           )}
 
-          <button
+          <Button
             type="button"
             onClick={stopRecording}
-            className="bg-red-950 text-white py-2 px-4 rounded-md hover:bg-red-900 transition-colors duration-200"
+            variant="danger"
+            size="sm"
           >
             ⏹ Stop Recording
-          </button>
+          </Button>
         </div>
       </div>
     );

@@ -344,14 +344,14 @@ export default function MomentForm({ onMomentCreated, sharedData }) {
           {audioData && (
             <div className="flex items-center gap-2 p-3 bg-gray-700 border border-gray-600 rounded-md">
               <span className="text-sm text-gray-300 flex-1">Audio recorded</span>
-              <button
+              <Button
                 type="button"
                 onClick={clearAudio}
-                className="bg-red-800 text-white px-3 py-1 rounded hover:bg-red-900 transition-colors duration-200 text-sm"
-                disabled={loading}
+                variant="danger"
+                size="sm"
               >
                 Remove
-              </button>
+              </Button>
             </div>
           )}
         </div>
