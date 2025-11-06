@@ -71,56 +71,24 @@ export default function WakeLockDemo() {
           </p>
         </div>
 
-        {/* Simulation Controls */}
-        <div className="space-y-3 p-3 rounded bg-gray-900/30 border border-gray-700">
-          <p className="text-sm text-neutral-400">
-            Simulate an activity (video recording, audio playback):
-          </p>
-
-          <Button 
+        {/* Control */}
+        <div className="space-y-3">
+          <Button
             onClick={toggleSimulation}
-            variant={simulatedActivity ? 'secondary' : 'secondary'}
+            variant={simulatedActivity ? 'primary' : 'secondary'}
             fullWidth
           >
-            {simulatedActivity ? 'Stop Activity' : 'Start Activity'}
+            {simulatedActivity ? '🛑 Stop & Release Lock' : '▶️ Start & Lock Screen'}
           </Button>
 
           {simulatedActivity && (
             <div className="bg-blue-500/20 border border-blue-500/30 p-3 rounded-lg">
               <p className="text-sm text-blue-300 flex items-center gap-2">
                 <span className="animate-pulse">🎬</span>
-                <span>Simulating activity... Screen will stay on</span>
+                <span>Activity running... Screen will stay on</span>
               </p>
             </div>
           )}
-        </div>
-
-        {/* Screen Lock Toggle */}
-        <div className="p-4 bg-gray-900/50 border border-gray-700 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xl">📱</span>
-                <h4 className="font-medium">Screen Lock</h4>
-              </div>
-              <p className="text-sm text-gray-400">
-                Prevent screen from turning off
-              </p>
-            </div>
-            <button
-              onClick={wakeLock.isActive ? wakeLock.release : wakeLock.request}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                wakeLock.isActive ? 'bg-blue-600' : 'bg-gray-600'
-              }`}
-              aria-label="Toggle screen lock"
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  wakeLock.isActive ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
         </div>
 
         {/* Error Display */}

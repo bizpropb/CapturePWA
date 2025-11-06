@@ -7,6 +7,7 @@ import { useStepCounter } from '@/hooks/useStepCounter';
 import { useAmbientLight } from '@/hooks/useAmbientLight';
 import BatteryStatus from './BatteryStatus';
 import WakeLockDemo from './WakeLockDemo';
+import Button from '@/components/ui/Button';
 
 export default function SensorDemo() {
   const [shakeCount, setShakeCount] = useState(0);
@@ -49,12 +50,13 @@ export default function SensorDemo() {
         ) : (
           <div className="space-y-3">
             {!shake.hasPermission && (
-              <button
+              <Button
                 onClick={shake.requestPermission}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+                variant="secondary"
+                fullWidth
               >
                 Enable Shake Detection
-              </button>
+              </Button>
             )}
 
             {shake.hasPermission && (
@@ -87,7 +89,7 @@ export default function SensorDemo() {
             <span className="text-2xl">🧭</span>
             <h3 className="text-white font-semibold">Device Orientation</h3>
           </div>
-          <button
+          <Button
             onClick={() => {
               if (!orientationEnabled && !orientation.hasPermission) {
                 orientation.requestPermission().then(() => {
@@ -97,14 +99,11 @@ export default function SensorDemo() {
                 setOrientationEnabled(!orientationEnabled);
               }
             }}
-            className={`px-3 py-1 rounded text-sm transition ${
-              orientationEnabled
-                ? 'bg-green-600 text-white'
-                : 'bg-neutral-700 text-neutral-300'
-            }`}
+            variant={orientationEnabled ? 'success' : 'secondary'}
+            size="sm"
           >
             {orientationEnabled ? 'Enabled' : 'Enable'}
-          </button>
+          </Button>
         </div>
 
         {!orientation.isSupported ? (
@@ -113,7 +112,7 @@ export default function SensorDemo() {
           </p>
         ) : orientationEnabled ? (
           <div className="space-y-3">
-            <div className="text-center p-4 bg-neutral-800 rounded-lg">
+            <div className="text-center p-4 bg-gray-900/50 border border-gray-700 rounded-lg">
               <p className="text-lg text-white font-semibold mb-2">
                 {orientation.description}
               </p>
@@ -153,7 +152,7 @@ export default function SensorDemo() {
             <span className="text-2xl">👟</span>
             <h3 className="text-white font-semibold">Step Counter</h3>
           </div>
-          <button
+          <Button
             onClick={() => {
               if (!stepCounterEnabled && !stepCounter.hasPermission) {
                 stepCounter.requestPermission().then(() => {
@@ -163,14 +162,11 @@ export default function SensorDemo() {
                 setStepCounterEnabled(!stepCounterEnabled);
               }
             }}
-            className={`px-3 py-1 rounded text-sm transition ${
-              stepCounterEnabled
-                ? 'bg-green-600 text-white'
-                : 'bg-neutral-700 text-neutral-300'
-            }`}
+            variant={stepCounterEnabled ? 'success' : 'secondary'}
+            size="sm"
           >
             {stepCounterEnabled ? 'Enabled' : 'Enable'}
-          </button>
+          </Button>
         </div>
 
         {!stepCounter.isSupported ? (
@@ -179,19 +175,20 @@ export default function SensorDemo() {
           </p>
         ) : stepCounterEnabled ? (
           <div className="space-y-3">
-            <div className="text-center p-6 bg-neutral-800 rounded-lg">
+            <div className="text-center p-6 bg-gray-900/50 border border-gray-700 rounded-lg">
               <p className="text-5xl font-bold text-green-400 mb-2">
                 {stepCounter.stepCount}
               </p>
               <p className="text-neutral-400">steps detected</p>
             </div>
 
-            <button
+            <Button
               onClick={stepCounter.reset}
-              className="w-full bg-neutral-700 text-white py-2 px-4 rounded-lg hover:bg-neutral-600 transition"
+              variant="danger"
+              fullWidth
             >
               Reset Counter
-            </button>
+            </Button>
 
             <p className="text-xs text-neutral-500 text-center">
               Note: This is a rough estimate using the accelerometer
@@ -211,16 +208,13 @@ export default function SensorDemo() {
             <span className="text-2xl">💡</span>
             <h3 className="text-white font-semibold">Ambient Light</h3>
           </div>
-          <button
+          <Button
             onClick={() => setLightSensorEnabled(!lightSensorEnabled)}
-            className={`px-3 py-1 rounded text-sm transition ${
-              lightSensorEnabled
-                ? 'bg-green-600 text-white'
-                : 'bg-neutral-700 text-neutral-300'
-            }`}
+            variant={lightSensorEnabled ? 'success' : 'secondary'}
+            size="sm"
           >
             {lightSensorEnabled ? 'Enabled' : 'Enable'}
-          </button>
+          </Button>
         </div>
 
         {!ambientLight.isSupported ? (

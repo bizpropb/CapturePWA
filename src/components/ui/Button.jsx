@@ -1,6 +1,6 @@
 /**
  * Reusable Button component
- * Variants: primary, secondary, ghost, danger
+ * Variants: primary, secondary, ghost, danger, success
  * Sizes: sm, md, lg
  */
 
@@ -21,6 +21,7 @@ export default function Button({
     secondary: 'bg-gray-700 text-gray-200 hover:bg-gray-600 focus:ring-gray-500',
     ghost: 'bg-transparent text-gray-300 hover:bg-gray-800 focus:ring-gray-500',
     danger: 'bg-gray-800 border-gray-700 text-white hover:text-red-900 border-1 hover:border-red-900 focus:ring-red-500',
+    success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
   };
 
   const sizes = {

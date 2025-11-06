@@ -261,7 +261,7 @@ export default function PushNotificationManager() {
           <Button
             onClick={handleSubscribe}
             disabled={loading || permission === 'denied' || !swRegistered}
-            variant="primary"
+            variant="secondary"
           >
             {loading ? 'Subscribing...' : 'Enable Notifications'}
           </Button>
