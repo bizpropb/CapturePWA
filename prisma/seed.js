@@ -153,11 +153,12 @@ async function main() {
       });
     };
 
-    // 1. Beautiful sunrise - San Francisco
+    // 1. Beautiful sunrise - San Francisco (WITH IMAGE)
     await createMomentWithDate({
       description: 'Beautiful sunrise this morning! Started the day with a sense of gratitude. 🌅',
       mood: 'happy',
       weather: 'sunny',
+      imageUrl: 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=800',
       gpsLat: 37.7749,
       gpsLng: -122.4194,
       gpsAccuracy: 15.0,
@@ -190,11 +191,12 @@ async function main() {
       },
     }, 1);
 
-    // 3. Family dinner - Chicago
+    // 3. Family dinner - Chicago (WITH IMAGE)
     await createMomentWithDate({
       description: 'Dinner with the family. Nothing beats home-cooked meals and good conversations. ❤️',
       mood: 'grateful',
       weather: 'clear',
+      imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800',
       gpsLat: 41.8781,
       gpsLng: -87.6298,
       gpsAccuracy: 10.0,
@@ -209,11 +211,12 @@ async function main() {
       },
     }, 2);
 
-    // 4. Mountain hike - Denver
+    // 4. Mountain hike - Denver (WITH IMAGE)
     await createMomentWithDate({
       description: 'Conquered the trail! The view from the top was absolutely breathtaking. Nature therapy at its finest. 🏔️',
       mood: 'energized',
       weather: 'sunny',
+      imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
       gpsLat: 39.7392,
       gpsLng: -104.9903,
       gpsAccuracy: 50.0,
@@ -246,11 +249,13 @@ async function main() {
       },
     }, 4);
 
-    // 6. Beach sunset - Los Angeles
+    // 6. Beach sunset - Los Angeles (WITH IMAGE + VIDEO)
     await createMomentWithDate({
       description: 'Beach sunset with friends. Living for these golden hour moments! 🌊✨',
       mood: 'relaxed',
       weather: 'sunny',
+      imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
+      videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', // sample video URL
       gpsLat: 34.0522,
       gpsLng: -118.2437,
       gpsAccuracy: 30.0,
@@ -304,11 +309,13 @@ async function main() {
       },
     }, 7);
 
-    // 9. Street food adventure - Portland
+    // 9. Street food adventure - Portland (WITH IMAGE + AUDIO)
     await createMomentWithDate({
       description: 'Found this amazing food cart! The tacos are incredible. Must come back here soon. 🌮',
       mood: 'delighted',
       weather: 'sunny',
+      imageUrl: 'https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=800',
+      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // sample audio
       gpsLat: 45.5152,
       gpsLng: -122.6784,
       gpsAccuracy: 18.0,
@@ -418,11 +425,13 @@ async function main() {
       },
     }, 13);
 
-    // 15. Concert night - Nashville
+    // 15. Concert night - Nashville (WITH IMAGE + AUDIO)
     await createMomentWithDate({
       description: 'Live music hits different! What an incredible performance. My soul is happy! 🎵🎸',
       mood: 'euphoric',
       weather: 'clear',
+      imageUrl: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800',
+      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', // sample audio
       gpsLat: 36.1627,
       gpsLng: -86.7816,
       gpsAccuracy: 45.0,

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Skeleton from '@/components/ui/Skeleton';
 
 /**
@@ -78,20 +77,20 @@ function GalleryItem({ moment, onClick }) {
     >
       {/* Media Preview */}
       {hasImage && (
-        <div className="relative w-full" style={{ aspectRatio: 'auto' }}>
-          <Image
+        <div className="relative w-full h-64 overflow-hidden">
+          <img
             src={moment.imageUrl}
             alt={moment.description}
-            width={400}
-            height={300}
-            className="w-full h-auto object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
-          {/* Overlay on hover */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              🔍
-            </span>
+          {/* Hover overlay */}
+          <div
+            className="absolute inset-0 bg-black transition-opacity duration-300 flex items-center justify-center pointer-events-none"
+            style={{ opacity: 0 }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.5'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
+          >
+            <span className="text-white text-4xl">🔍</span>
           </div>
         </div>
       )}

@@ -61,11 +61,13 @@ export async function getAllMomentsWithMedia({
       where.categoryId = categoryId;
     }
 
-    // Tag filter
+    // Tag filter - query the join table properly
     if (tagIds.length > 0) {
       where.tags = {
         some: {
-          tagId: { in: tagIds },
+          tag: {
+            id: { in: tagIds },
+          },
         },
       };
     }

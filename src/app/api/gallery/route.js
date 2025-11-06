@@ -24,11 +24,13 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit') || '20', 10);
     const mediaType = searchParams.get('mediaType') || 'all';
     const sortBy = searchParams.get('sortBy') || 'newest';
-    const dateFrom = searchParams.get('dateFrom')
-      ? new Date(searchParams.get('dateFrom'))
+    const dateFromParam = searchParams.get('dateFrom');
+    const dateFrom = dateFromParam && dateFromParam !== 'null'
+      ? new Date(dateFromParam)
       : null;
-    const dateTo = searchParams.get('dateTo')
-      ? new Date(searchParams.get('dateTo'))
+    const dateToParam = searchParams.get('dateTo');
+    const dateTo = dateToParam && dateToParam !== 'null'
+      ? new Date(dateToParam)
       : null;
     const tagIds = searchParams.get('tagIds')
       ? JSON.parse(searchParams.get('tagIds'))
