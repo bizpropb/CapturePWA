@@ -66,16 +66,24 @@ export async function requestMicrophone(options = { audio: true }) {
  * @param {Object} options - Geolocation options
  * @returns {Promise<GeolocationPosition>} Position data
  */
-export function requestLocation(options = { enableHighAccuracy: true, timeout: 10000 }) {
+export function requestLocation(options = { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }) {
   return new Promise((resolve, reject) => {
     if (!checkGPSSupport()) {
       reject(new Error('Geolocation not supported'));
       return;
     }
 
+    console.log('[GPS] Requesting location with options:', options);
+
     navigator.geolocation.getCurrentPosition(
-      resolve,
-      (error) => reject(new Error(getLocationErrorMessage(error))),
+      (position) => {
+        console.log('[GPS] Location received:', position);
+        resolve(position);
+      },
+      (error) => {
+        console.error('[GPS] Location error:', error);
+        reject(new Error(getLocationErrorMessage(error)));
+      },
       options
     );
   });
